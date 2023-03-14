@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Adding Lookup Field to a Page in Dynamics NAV</title>
-    <url>/myhz0606/2015/04/05/2015-04-05-Lookup-on-Page/</url>
-    <content><![CDATA[<p>One of the problems I faced in building a non-trivial application that consumed<br>NAV Web Services was figuring out how to “join” fields from different tables.<br>For example, when exposing a list of jobs from a job table which includes a<br>resource needed for the job, you might need more than just the resource id<br>that’s a field in the table: you might also need the resource name and<br>description.  While this is easy to get for one record, what about when you<br>need a few hundred records in a table that has been dynamically filtered?  When<br>exposing a Page as a web service, it’s easy to include the fields of the table<br>that the page is based on, but it’s less clear how to include fields from<br>another table.</p>
-<p>Forum posts like <a href="http://dynamicsuser.net/forums/p/32550/170843.aspx">this</a> led me to believe that I couldn’t expose flow fields in a Page web service, and I would get exceptions when I tried to expose all the fields of a table.  In fact, it’s perfectly possible to expose a flow field: it’s <strong>flow filters</strong> that don’t work with web services.  But, I also didn’t want to modify the underlying [job] table to add a flow field, and didn’t see an easy way of adding a flow field to a Page.  I tried “joining” the data in the C# application, but found network overhead made the application unusuably slow.</p>
-<p>The solution to this problem was to use C/AL code to the Page to effectively create a lookup / flow field.  This way, the data is “pre-joined” before leaving the NAV Server, which is fast and clean, but you didn’t modify any tables.  Here’s how it’s done:</p>
-<p>Step 1. <strong>Add a Field with SourceExpression Set to a Function Name</strong></p>
-<p>To start, we create a Page using the wizard that includes all of the fields of an underlying table.  Then, we create manually add fields that will contain the lookup data from other tables.  The text in the SourceExpression column will be the name of the function that populates this field.<br><img data-src="http://ptsteadman.github.io/images/lookup-1.PNG" alt="Add a Field with SourceExpression Set to a Function Name"></p>
-<p>Step 2. <strong>Create Function in the Page’s C/AL Code</strong></p>
-<p>With the Page field designer open, go to the functions tab of C/AL Globals form, and add a function with the name of the text in the SourceExpression column.  Set the return type of the function with the “Locals” button, and a function trigger will appear in the C/AL code editor for your page.  Add code to the body of the function trigger that will be called for each record to provide a value for the field.<br><img data-src="http://ptsteadman.github.io/images/lookup-2.PNG" alt="Create Function in the Page&#39;s C/AL Code"></p>
-]]></content>
-      <categories>
-        <category>Hexo</category>
-      </categories>
-      <tags>
-        <tag>documents</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Welcome To Hexo</title>
     <url>/myhz0606/2014/02/23/2014-02-23-hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="http://hexo.io/">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
@@ -40,25 +22,33 @@
       </tags>
   </entry>
   <entry>
-    <title>How To Impress Employers at Infosessions</title>
-    <url>/myhz0606/2015/05/02/2015-05-02-How-To-Impress/</url>
-    <content><![CDATA[<p>Top tech talent knows that industry recruiters often bring a stack of<br>pre-negotiated offers to university infosessions, so that they can snag<br>programmers and UX designers who really stand out.  Instead of spending valuable<br>time validating a particularly promising candidate’s skillset through a<br>protracted series of interviews, it’s often more efficient to simply <strong>give the<br>individual an offer right then and there</strong>.  Internal studies at Google have shown<br>that experienced recruiters can usually tell if a programmer has ‘what it takes’<br>just from how they act at infosessions: the insightful questions they ask, the<br>stickers on their laptop, and how they comport themselves in general.</p>
-<span id="more"></span>
-<p>Top tech talent knows that industry recruiters often bring a stack of<br>pre-negotiated offers to university infosessions, so that they can snag<br>programmers and UX designers who really stand out.  Instead of spending valuable<br>time validating a particularly promising candidate’s skillset through a<br>protracted series of interviews, it’s often more efficient to simply <strong>give the<br>individual an offer right then and there</strong>.  Internal studies at Google have shown<br>that experienced recruiters can usually tell if a programmer has ‘what it takes’<br>just from how they act at infosessions: the insightful questions they ask, the<br>stickers on their laptop, and how they comport themselves in general.</p>
-<p>Here are some of tips for optimizing your infosession performance:</p>
-<ul>
-<li><p>Ask questions to get a feel for the company’s culture.  For example, I always<br>start off by asking “do you have a mandatory drug test?”.</p>
-</li>
-<li><p>Make sure that the recruiters know you’re passionate about the company by<br>crying.  </p>
-</li>
-<li><p>Don’t be that awkward guy who goes up for more pizza while the presenter is<br>providing valuable information about the company’s agile development cycle.<br>Instead, demonstrate your ability to amortize I/O costs via bulk loading:<br>bring a whole box of pizza back to your seat.  Protip: “free swag” t-shirts<br>make great face rags, so grab a handful.</p>
-</li>
-<li><p>Stay focused by minimizing distractions.  I typically wear my Bose<br>QuietComfort noise cancelling headphones during the presentation.  This way I<br>retain more information from the PowerPoint, which really impresses the<br>recruiters during the networking session.  Follow me on Spotify to check out<br>my special “Let’s Do This Infosession” playlist.</p>
-</li>
-<li><p>Getting invited to the ‘after-infosession’ is critical.  During the networking<br>session, ask the recruiters what hotel they’re staying at, and make sure that<br>they know that you ‘know a guy’.  Without fail, someone will slip a wax-sealed<br>envelope under your door at midnight, the coveted invitation to an another, more<br>exclusive networking event.  </p>
-</li>
-</ul>
-<p>If you follow these simple tips and brush up on your data structures, you’ll<br>soon be literally <em>drowning</em> in offers, like everyone else.  If these tips don’t<br>work out for you, you probably need to get your MEng.</p>
+    <title>Adding Lookup Field to a Page in Dynamics NAV</title>
+    <url>/myhz0606/2015/04/05/2015-04-05-Lookup-on-Page/</url>
+    <content><![CDATA[<p>One of the problems I faced in building a non-trivial application that consumed<br>NAV Web Services was figuring out how to “join” fields from different tables.<br>For example, when exposing a list of jobs from a job table which includes a<br>resource needed for the job, you might need more than just the resource id<br>that’s a field in the table: you might also need the resource name and<br>description.  While this is easy to get for one record, what about when you<br>need a few hundred records in a table that has been dynamically filtered?  When<br>exposing a Page as a web service, it’s easy to include the fields of the table<br>that the page is based on, but it’s less clear how to include fields from<br>another table.</p>
+<p>Forum posts like <a href="http://dynamicsuser.net/forums/p/32550/170843.aspx">this</a> led me to believe that I couldn’t expose flow fields in a Page web service, and I would get exceptions when I tried to expose all the fields of a table.  In fact, it’s perfectly possible to expose a flow field: it’s <strong>flow filters</strong> that don’t work with web services.  But, I also didn’t want to modify the underlying [job] table to add a flow field, and didn’t see an easy way of adding a flow field to a Page.  I tried “joining” the data in the C# application, but found network overhead made the application unusuably slow.</p>
+<p>The solution to this problem was to use C/AL code to the Page to effectively create a lookup / flow field.  This way, the data is “pre-joined” before leaving the NAV Server, which is fast and clean, but you didn’t modify any tables.  Here’s how it’s done:</p>
+<p>Step 1. <strong>Add a Field with SourceExpression Set to a Function Name</strong></p>
+<p>To start, we create a Page using the wizard that includes all of the fields of an underlying table.  Then, we create manually add fields that will contain the lookup data from other tables.  The text in the SourceExpression column will be the name of the function that populates this field.<br><img data-src="http://ptsteadman.github.io/images/lookup-1.PNG" alt="Add a Field with SourceExpression Set to a Function Name"></p>
+<p>Step 2. <strong>Create Function in the Page’s C/AL Code</strong></p>
+<p>With the Page field designer open, go to the functions tab of C/AL Globals form, and add a function with the name of the text in the SourceExpression column.  Set the return type of the function with the “Locals” button, and a function trigger will appear in the C/AL code editor for your page.  Add code to the body of the function trigger that will be called for each record to provide a value for the field.<br><img data-src="http://ptsteadman.github.io/images/lookup-2.PNG" alt="Create Function in the Page&#39;s C/AL Code"></p>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>documents</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NAV Web Service Programming Resources</title>
+    <url>/myhz0606/2015/04/08/2015-04-08-NAV-Programming-Resources/</url>
+    <content><![CDATA[<p>Here are some of the resources I found helpful for learning to develop Dynamics NAV web service based applications.</p>
+<h4 id="C-AL-Programming"><a href="#C-AL-Programming" class="headerlink" title="C/AL Programming:"></a>C/AL Programming:</h4><p><a href="http://www.consultec.es/DocTutoriales/Introduction_to_CAL_Programming.pdf">Introduction to CAL Programming</a><br>This provides a good overview of the basics of CAL programming, which can become necessary in building a web service applications when a custom codeunit or page extension is required.</p>
+<h4 id="Setting-up-Web-Services"><a href="#Setting-up-Web-Services" class="headerlink" title="Setting up Web Services:"></a>Setting up Web Services:</h4><p><a href="http://vjeko.com/blog/connecting-to-nav-through-web-services-recorded-session">Vjecko Web Service Recorded Session</a><br>Vjecko.com has a lot of detailed articles about web service programming, but this older post has a pdf and recorded session that shows how to expose and connect to web services from a .NET application.  Unfortunately, he shows how to create Web Service references in .NET using the now-deprecated Web Refrence method (from .NET 2) instead of the more current Service Reference method.</p>
+<p><a href="http://blogs.msdn.com/b/freddyk/archive/2010/01/20/connecting-to-nav-web-services-from-c-using-service-reference-config-file-version.aspx">Using Service Reference to Connect to Web Services</a><br>This explains how to use Service Reference, using code instead of XML web.config configuration, which I found difficult to configure.  (Each time I updated the service reference, I would have to reconfigure the XML).</p>
+<h4 id="NAV-Upgrade-Process"><a href="#NAV-Upgrade-Process" class="headerlink" title="NAV Upgrade Process:"></a>NAV Upgrade Process:</h4><p><a href="http://saurav-nav.blogspot.com/2012/12/nav-2013-upgrade-part-iv-sql-migration.html">Migration to SQL Server from C/SIDE Database</a><br>In order to use web services, you don’t need to be using the Role Tailored Client, but you must be using the a SQL server based NAV database.  Web Services can be configured and exposed using the Classic Client for SQL Server Databases.</p>
+<p><a href="http://blogs.msdn.com/b/nav/archive/2012/03/05/rtc-debugging.aspx">Debugging Code Called by Web Services</a><br>C/AL code won’t necessarily execute the same as it did in the Classic Client when called  as a Web Service.  C/AL code called as web service execute in the NAV Server tier, instead of the client.  <a href="http://msdn.microsoft.com/en-us/library/ff477107.aspx">Certain functions</a> aren’t available for code running in the NAV Server, and some design changes need to be made (for example, CONFIRM dialogue boxes don’t make sense in the context of a web service).  To debug the codeunits called through web services (or the Role Tailored Client), you will need to use Visual Studio.<br><a href="http://msdn.microsoft.com/en-us/library/dd338765.aspx#SU">More information.</a></p>
+<h4 id="Deploying-a-NET-Application"><a href="#Deploying-a-NET-Application" class="headerlink" title="Deploying a .NET Application:"></a>Deploying a .NET Application:</h4><p><a href="http://www.asp.net/mvc/overview/deployment/visual-studio-web-deployment/deploying-to-iis">Deploying to IIS</a>  After you’ve built a .NET application that consumes .NET web services, you’ll have to find a way to deploy it on your servers, or Azure.  Connection strings can be used to specify different NAV servers for different environments (like development, QA, and prod).</p>
 ]]></content>
       <categories>
         <category>Hexo</category>
@@ -340,6 +330,34 @@ x_{t-1} = \frac{1}{\sqrt{\alpha_t} }x_t - \sqrt{\frac{1 - \alpha_t}{\alpha_t} } 
         <tag>DDPM</tag>
         <tag>AIGC</tag>
         <tag>diffusion model</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>How To Impress Employers at Infosessions</title>
+    <url>/myhz0606/2015/05/02/2015-05-02-How-To-Impress/</url>
+    <content><![CDATA[<p>Top tech talent knows that industry recruiters often bring a stack of<br>pre-negotiated offers to university infosessions, so that they can snag<br>programmers and UX designers who really stand out.  Instead of spending valuable<br>time validating a particularly promising candidate’s skillset through a<br>protracted series of interviews, it’s often more efficient to simply <strong>give the<br>individual an offer right then and there</strong>.  Internal studies at Google have shown<br>that experienced recruiters can usually tell if a programmer has ‘what it takes’<br>just from how they act at infosessions: the insightful questions they ask, the<br>stickers on their laptop, and how they comport themselves in general.</p>
+<span id="more"></span>
+<p>Top tech talent knows that industry recruiters often bring a stack of<br>pre-negotiated offers to university infosessions, so that they can snag<br>programmers and UX designers who really stand out.  Instead of spending valuable<br>time validating a particularly promising candidate’s skillset through a<br>protracted series of interviews, it’s often more efficient to simply <strong>give the<br>individual an offer right then and there</strong>.  Internal studies at Google have shown<br>that experienced recruiters can usually tell if a programmer has ‘what it takes’<br>just from how they act at infosessions: the insightful questions they ask, the<br>stickers on their laptop, and how they comport themselves in general.</p>
+<p>Here are some of tips for optimizing your infosession performance:</p>
+<ul>
+<li><p>Ask questions to get a feel for the company’s culture.  For example, I always<br>start off by asking “do you have a mandatory drug test?”.</p>
+</li>
+<li><p>Make sure that the recruiters know you’re passionate about the company by<br>crying.  </p>
+</li>
+<li><p>Don’t be that awkward guy who goes up for more pizza while the presenter is<br>providing valuable information about the company’s agile development cycle.<br>Instead, demonstrate your ability to amortize I/O costs via bulk loading:<br>bring a whole box of pizza back to your seat.  Protip: “free swag” t-shirts<br>make great face rags, so grab a handful.</p>
+</li>
+<li><p>Stay focused by minimizing distractions.  I typically wear my Bose<br>QuietComfort noise cancelling headphones during the presentation.  This way I<br>retain more information from the PowerPoint, which really impresses the<br>recruiters during the networking session.  Follow me on Spotify to check out<br>my special “Let’s Do This Infosession” playlist.</p>
+</li>
+<li><p>Getting invited to the ‘after-infosession’ is critical.  During the networking<br>session, ask the recruiters what hotel they’re staying at, and make sure that<br>they know that you ‘know a guy’.  Without fail, someone will slip a wax-sealed<br>envelope under your door at midnight, the coveted invitation to an another, more<br>exclusive networking event.  </p>
+</li>
+</ul>
+<p>If you follow these simple tips and brush up on your data structures, you’ll<br>soon be literally <em>drowning</em> in offers, like everyone else.  If these tips don’t<br>work out for you, you probably need to get your MEng.</p>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>documents</tag>
       </tags>
   </entry>
   <entry>
@@ -1311,24 +1329,6 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
         <tag>图像检索</tag>
         <tag>哈希检索</tag>
         <tag>图像哈希</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>NAV Web Service Programming Resources</title>
-    <url>/myhz0606/2015/04/08/2015-04-08-NAV-Programming-Resources/</url>
-    <content><![CDATA[<p>Here are some of the resources I found helpful for learning to develop Dynamics NAV web service based applications.</p>
-<h4 id="C-AL-Programming"><a href="#C-AL-Programming" class="headerlink" title="C/AL Programming:"></a>C/AL Programming:</h4><p><a href="http://www.consultec.es/DocTutoriales/Introduction_to_CAL_Programming.pdf">Introduction to CAL Programming</a><br>This provides a good overview of the basics of CAL programming, which can become necessary in building a web service applications when a custom codeunit or page extension is required.</p>
-<h4 id="Setting-up-Web-Services"><a href="#Setting-up-Web-Services" class="headerlink" title="Setting up Web Services:"></a>Setting up Web Services:</h4><p><a href="http://vjeko.com/blog/connecting-to-nav-through-web-services-recorded-session">Vjecko Web Service Recorded Session</a><br>Vjecko.com has a lot of detailed articles about web service programming, but this older post has a pdf and recorded session that shows how to expose and connect to web services from a .NET application.  Unfortunately, he shows how to create Web Service references in .NET using the now-deprecated Web Refrence method (from .NET 2) instead of the more current Service Reference method.</p>
-<p><a href="http://blogs.msdn.com/b/freddyk/archive/2010/01/20/connecting-to-nav-web-services-from-c-using-service-reference-config-file-version.aspx">Using Service Reference to Connect to Web Services</a><br>This explains how to use Service Reference, using code instead of XML web.config configuration, which I found difficult to configure.  (Each time I updated the service reference, I would have to reconfigure the XML).</p>
-<h4 id="NAV-Upgrade-Process"><a href="#NAV-Upgrade-Process" class="headerlink" title="NAV Upgrade Process:"></a>NAV Upgrade Process:</h4><p><a href="http://saurav-nav.blogspot.com/2012/12/nav-2013-upgrade-part-iv-sql-migration.html">Migration to SQL Server from C/SIDE Database</a><br>In order to use web services, you don’t need to be using the Role Tailored Client, but you must be using the a SQL server based NAV database.  Web Services can be configured and exposed using the Classic Client for SQL Server Databases.</p>
-<p><a href="http://blogs.msdn.com/b/nav/archive/2012/03/05/rtc-debugging.aspx">Debugging Code Called by Web Services</a><br>C/AL code won’t necessarily execute the same as it did in the Classic Client when called  as a Web Service.  C/AL code called as web service execute in the NAV Server tier, instead of the client.  <a href="http://msdn.microsoft.com/en-us/library/ff477107.aspx">Certain functions</a> aren’t available for code running in the NAV Server, and some design changes need to be made (for example, CONFIRM dialogue boxes don’t make sense in the context of a web service).  To debug the codeunits called through web services (or the Role Tailored Client), you will need to use Visual Studio.<br><a href="http://msdn.microsoft.com/en-us/library/dd338765.aspx#SU">More information.</a></p>
-<h4 id="Deploying-a-NET-Application"><a href="#Deploying-a-NET-Application" class="headerlink" title="Deploying a .NET Application:"></a>Deploying a .NET Application:</h4><p><a href="http://www.asp.net/mvc/overview/deployment/visual-studio-web-deployment/deploying-to-iis">Deploying to IIS</a>  After you’ve built a .NET application that consumes .NET web services, you’ll have to find a way to deploy it on your servers, or Azure.  Connection strings can be used to specify different NAV servers for different environments (like development, QA, and prod).</p>
-]]></content>
-      <categories>
-        <category>Hexo</category>
-      </categories>
-      <tags>
-        <tag>documents</tag>
       </tags>
   </entry>
 </search>
