@@ -17,15 +17,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/myhz0606/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null,"valine":{"enable":true,"appId":null,"appKey":null,"serverURLs":null,"placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":true,"comment_count":true,"recordIP":false}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"github.com","root":"/myhz0606/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null,"valine":{"enable":true,"appId":null,"appKey":null,"serverURLs":null,"placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":true,"comment_count":true,"recordIP":false}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="1 问题引出1.1 从最近邻搜索谈起(nearest neighbor search, NN)最近邻检索：给定一张查询图片q(即query)（或文本），从数据库$\mathcal{X}$中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。 用公式表达最近邻检索：  \mathrm{NN}(q)&#x3D;\mathrm{arg}\mathop{min}\li">
+  <meta name="description" content="1 问题引出 1.1 从最近邻搜索谈起(nearest neighbor search, NN) 最近邻检索：给定一张查询图片q(即query)（或文本），从数据库$\mathcal{X}$中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。 用公式表达最近邻检索： $$ \mathrm{NN}(q)&#x3D;\mathrm{arg}\mathop{min">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Image Hash Roadmap">
 <meta property="og:url" content="https://github.com/myhz0606/2023/01/28/image_hash_exp/index.html">
 <meta property="og:site_name" content="莫叶何竹">
-<meta property="og:description" content="1 问题引出1.1 从最近邻搜索谈起(nearest neighbor search, NN)最近邻检索：给定一张查询图片q(即query)（或文本），从数据库$\mathcal{X}$中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。 用公式表达最近邻检索：  \mathrm{NN}(q)&#x3D;\mathrm{arg}\mathop{min}\li">
+<meta property="og:description" content="1 问题引出 1.1 从最近邻搜索谈起(nearest neighbor search, NN) 最近邻检索：给定一张查询图片q(即query)（或文本），从数据库$\mathcal{X}$中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。 用公式表达最近邻检索： $$ \mathrm{NN}(q)&#x3D;\mathrm{arg}\mathop{min">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/myhz0606/2023/01/28/image_hash_exp/images/image_hash_exp/HashNet_1.jpeg">
 <meta property="og:image" content="https://github.com/images/image_hash_exp/HashNet_1.jpeg">
@@ -279,13 +279,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-问题引出"><a href="#1-问题引出" class="headerlink" title="1 问题引出"></a>1 问题引出</h2><h3 id="1-1-从最近邻搜索谈起-nearest-neighbor-search-NN"><a href="#1-1-从最近邻搜索谈起-nearest-neighbor-search-NN" class="headerlink" title="1.1 从最近邻搜索谈起(nearest neighbor search, NN)"></a>1.1 从最近邻搜索谈起(nearest neighbor search, NN)</h3><p>最近邻检索：给定一张查询图片q(即query)（或文本），从数据库$\mathcal{X}$中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。</p>
-<p>用公式表达最近邻检索：</p>
-<script type="math/tex; mode=display">
-\mathrm{NN}(q)=\mathrm{arg}\mathop{min}\limits_{x\in \mathcal{X} } \ \mathrm{dist}(q, x)</script><p>dist 是某一种距离计算公式（如欧式距离、余弦距离）</p>
-<p>直觉来看，最近邻问题很简单，<strong>只要计算query和库中所有向量的距离，再按照距离的大小排序返回最相近样本的索引即可。</strong>但是当数据规模过大时这就成为了一个问题。假设查询图片的向量维度为256（即$d\in \mathbb{R}^{256}$）,数据了类型为float64，一条向量的数据大小为 256 * 64 / 8 = 2KB。此时采用这种暴力搜索的方法进行检索，代价会非常大。</p>
-<p>（实验CPU：Intel(R) Xeon(R) Gold 6226R CPU @ 2.90GHz）</p>
-<div class="table-container">
+        <h2 id="1-问题引出">1 问题引出</h2>
+<h3 id="1-1-从最近邻搜索谈起-nearest-neighbor-search-NN">1.1 从最近邻搜索谈起(nearest neighbor search, NN)</h3>
+<p>最近邻检索：给定一张查询图片q(即query)（或文本），从数据库$\mathcal{X}$中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。</p>
+<p>用公式表达最近邻检索：<br>
+$$<br>
+\mathrm{NN}(q)=\mathrm{arg}\mathop{min}\limits_{x\in \mathcal{X} } \ \mathrm{dist}(q, x)<br>
+$$<br>
+dist 是某一种距离计算公式（如欧式距离、余弦距离）</p>
+<p>直觉来看，最近邻问题很简单，**只要计算query和库中所有向量的距离，再按照距离的大小排序返回最相近样本的索引即可。**但是当数据规模过大时这就成为了一个问题。假设查询图片的向量维度为256（即$d\in \mathbb{R}^{256}$）,数据了类型为float64，一条向量的数据大小为 256 * 64 / 8 = 2KB。此时采用这种暴力搜索的方法进行检索，代价会非常大。</p>
+<p>（实验CPU：Intel® Xeon® Gold 6226R CPU @ 2.90GHz）</p>
 <table>
 <thead>
 <tr>
@@ -312,16 +315,20 @@
 </tr>
 </tbody>
 </table>
-</div>
-<p>可见当数据量较大时，无论是从向量存储还是从搜索时延都无法满足实际应用需求。在工程中，当向量维度较低时，我们常用Kd-tree来加速搜索。当数据规模过大是（亿级），我们往往用到近似最近邻搜索技术(approximate nearest neighbor search，ANN)，ANN技术的核心技术之一就是向量量化技术(vector quantization, VQ<sup><a href="#fn_41" id="reffn_41">41</a></sup>)，常用的方法有乘积量化（product quantization，PQ<sup><a href="#fn_42" id="reffn_42">42</a></sup>）,哈希等。</p>
-<h3 id="1-2-图片向量哈希是啥，有啥难点"><a href="#1-2-图片向量哈希是啥，有啥难点" class="headerlink" title="1.2 图片向量哈希是啥，有啥难点"></a>1.2 图片向量哈希是啥，有啥难点</h3><h4 id="1-2-1-图片向量哈希是啥"><a href="#1-2-1-图片向量哈希是啥" class="headerlink" title="1.2.1 图片向量哈希是啥"></a>1.2.1 图片向量哈希是啥</h4><p>向量哈希是ANN技术中向量量化技术的一种常用方法。其目标是学习一个哈希量化函数将一个浮点型或整型的向量量化为一个哈希向量（仅含有两个值，0/1或-1/1）且尽可能的保证搜索结果能够维持（即 similarity preserving）。此时公式（1）可转化为：</p>
-<script type="math/tex; mode=display">
-\mathrm{HashNN}(q)=\mathrm{arg}\mathop{min}\limits_{x\in \mathcal{X} } \ \mathrm{HammingDist}(q, x)</script><script type="math/tex; mode=display">
-\mathrm{HammingDist}(x_1, x_2)=\mathrm{sum}( x1 \oplus x2)</script><p>通过上面可以看出图片哈希检索与经典的NN检索有两个主要的不同点：</p>
+<p>可见当数据量较大时，无论是从向量存储还是从搜索时延都无法满足实际应用需求。在工程中，当向量维度较低时，我们常用Kd-tree来加速搜索。当数据规模过大是（亿级），我们往往用到近似最近邻搜索技术(approximate nearest neighbor search，ANN)，ANN技术的核心技术之一就是向量量化技术(vector quantization, VQ<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>)，常用的方法有乘积量化（product quantization，PQ<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>）,哈希等。</p>
+<h3 id="1-2-图片向量哈希是啥，有啥难点">1.2 图片向量哈希是啥，有啥难点</h3>
+<h4 id="1-2-1-图片向量哈希是啥">1.2.1 图片向量哈希是啥</h4>
+<p>向量哈希是ANN技术中向量量化技术的一种常用方法。其目标是学习一个哈希量化函数将一个浮点型或整型的向量量化为一个哈希向量（仅含有两个值，0/1或-1/1）且尽可能的保证搜索结果能够维持（即 similarity preserving）。此时公式（1）可转化为：<br>
+$$<br>
+\mathrm{HashNN}(q)=\mathrm{arg}\mathop{min}\limits_{x\in \mathcal{X} } \ \mathrm{HammingDist}(q, x)<br>
+$$</p>
+<p>$$<br>
+\mathrm{HammingDist}(x_1, x_2)=\mathrm{sum}( x1 \oplus x2)<br>
+$$</p>
+<p>通过上面可以看出图片哈希检索与经典的NN检索有两个主要的不同点：</p>
 <ol>
-<li>图片向量数据类型不同。哈希向量数域集合只有两个值{-1, 1}，浮点向量的数域集合接近无穷。这个特性能够大大降低向量检索任务的内存消耗。以上文256位的向量为例，数据类型为float64时一条向量占用2KB。但为哈希向量时一条数据类型仅为 256 * 1 / 8 = 32B,降低64倍的存储空间。可见哈希能够大幅度降低磁盘、内存的消耗。</li>
-</ol>
-<div class="table-container">
+<li>
+<p>图片向量数据类型不同。哈希向量数域集合只有两个值{-1, 1}，浮点向量的数域集合接近无穷。这个特性能够大大降低向量检索任务的内存消耗。以上文256位的向量为例，数据类型为float64时一条向量占用2KB。但为哈希向量时一条数据类型仅为 256 * 1 / 8 = 32B,降低64倍的存储空间。可见哈希能够大幅度降低磁盘、内存的消耗。</p>
 <table>
 <thead>
 <tr>
@@ -348,65 +355,98 @@
 </tr>
 </tbody>
 </table>
-</div>
-<ol>
-<li>距离计算公式不同。哈希检索用hamming距离作为其距离计算指标。即对两个向量按位求异或后相加。<strong>相对浮点数欧式距离、余弦距离的计算更快。</strong></li>
+</li>
+<li>
+<p>距离计算公式不同。哈希检索用hamming距离作为其距离计算指标。即对两个向量按位求异或后相加。<strong>相对浮点数欧式距离、余弦距离的计算更快。</strong></p>
+</li>
 </ol>
-<h4 id="1-2-2-图片向量哈希的主要难点（要解决什么问题）"><a href="#1-2-2-图片向量哈希的主要难点（要解决什么问题）" class="headerlink" title="1.2.2 图片向量哈希的主要难点（要解决什么问题）"></a>1.2.2 图片向量哈希的主要难点（要解决什么问题）</h4><p>难点1: <strong>如何解决相似度维持问题（similarity preserving</strong>）。即如何保证哈希后的检索结果和原向量的检索结果尽可能的一致。</p>
-<script type="math/tex; mode=display">
-\mathrm{NN}(q) \simeq \mathrm{HashNN}(q)</script><p>难点2: 向量哈希需要将向量从浮点数（或整数）映射到只包含两个值的数域空间（0/1或-1/1），这往往会用到符号函数。<strong>但符号函数不可导，如何用梯度下降进行优化？</strong>（针对用深度学习的哈希方法）。</p>
-<h2 id="2-图片向量哈希方法"><a href="#2-图片向量哈希方法" class="headerlink" title="2 图片向量哈希方法"></a>2 图片向量哈希方法</h2><h3 id="2-1-相似度维持的解决方案"><a href="#2-1-相似度维持的解决方案" class="headerlink" title="2.1 相似度维持的解决方案"></a>2.1 相似度维持的解决方案</h3><p>在深度哈希任务中，主要通过<strong>设计特定的损失函数来解决相似度维持问题</strong>。</p>
-<h4 id="2-1-1-基于成对标签"><a href="#2-1-1-基于成对标签" class="headerlink" title="2.1.1  基于成对标签"></a>2.1.1  基于成对标签</h4><p>比较有代表性的是DSH<sup><a href="#fn_2" id="reffn_2">2</a></sup>,DSDH<sup><a href="#fn_7" id="reffn_7">7</a></sup>,DPSH<sup><a href="#fn_3" id="reffn_3">3</a></sup>等。假定网络输入的图片$x_1, x_2$,经过网络输出的浮点向量为$f_1, f_2$， 经过哈希层后得到的哈希向量分别为$b_1, b_2, b_i \in \{-1, 1\}^c$，c是哈希向量的维度。成对标签规则如下：</p>
+<h4 id="1-2-2-图片向量哈希的主要难点（要解决什么问题）">1.2.2 图片向量哈希的主要难点（要解决什么问题）</h4>
+<p>难点1: <strong>如何解决相似度维持问题（similarity preserving</strong>）。即如何保证哈希后的检索结果和原向量的检索结果尽可能的一致。<br>
+$$<br>
+\mathrm{NN}(q) \simeq \mathrm{HashNN}(q)<br>
+$$<br>
+难点2: 向量哈希需要将向量从浮点数（或整数）映射到只包含两个值的数域空间（0/1或-1/1），这往往会用到符号函数。<strong>但符号函数不可导，如何用梯度下降进行优化？</strong>（针对用深度学习的哈希方法）。</p>
+<h2 id="2-图片向量哈希方法">2 图片向量哈希方法</h2>
+<h3 id="2-1-相似度维持的解决方案">2.1 相似度维持的解决方案</h3>
+<p>在深度哈希任务中，主要通过<strong>设计特定的损失函数来解决相似度维持问题</strong>。</p>
+<h4 id="2-1-1-基于成对标签">2.1.1  基于成对标签</h4>
+<p>比较有代表性的是DSH<sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>,DSDH<sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup>,DPSH<sup class="footnote-ref"><a href="#fn5" id="fnref5">[5]</a></sup>等。假定网络输入的图片$x_1, x_2$,经过网络输出的浮点向量为$f_1, f_2$， 经过哈希层后得到的哈希向量分别为$b_1, b_2, b_i \in {-1, 1}^c$，c是哈希向量的维度。成对标签规则如下：</p>
 <ul>
 <li>若$x_1, x_2$归属同一个类别（或认为相似），则认为其成对标签$s_{12}=1$</li>
 <li>若$x_1, x_2$归属同不同类别否则为$s_{12}=0$。</li>
 </ul>
 <p>对于任意两个数据点$i,j$其似然概率定义如下</p>
-<script type="math/tex; mode=display">
-p(s_{ij} | \mathcal{B}) =
-\left \{
-\begin{aligned}
-& \sigma(\Omega_{ij})   \, & s_{ij} = 1 \\
-& 1 - \sigma(\Omega_{ij}) \, & s_{ij} = 0
-\end{aligned}
-\right.</script><p>其中 $\Omega_{ij}=\frac{1}{2}b_i^Tb_j$，$\sigma(\Omega_{ij})=\frac{1}{1+e^{-\Omega_{ij} } }$</p>
-<p>其目标函数为</p>
-<script type="math/tex; mode=display">
-\mathop{min}\limits_{\mathcal{B} }=- \mathop{log} p(\mathcal{S}|\mathcal{B})=-\sum \limits_{s_{ij} \in \mathcal{S} } \mathop{log} p(s_{ij}| \mathcal{B})=-\sum \limits_{s_{ij} \in \mathcal{S} } (s_{ij} \Omega_{ij} - log(1 + e^{\Omega_{ij} }))</script><p><strong>此类方法的扩展有</strong>：引入margin来优化类内方差与类间方差<sup><a href="#fn_10" id="reffn_10">10</a></sup>、扩展到三元组<sup><a href="#fn_4" id="reffn_4">4</a></sup>、基于类别分布进行加权<sup><a href="#fn_6" id="reffn_6">6</a></sup>、亦或是扩展到多标签<sup><a href="#fn_11" id="reffn_11">11</a></sup></p>
-<h4 id="2-1-2-基于语义标签"><a href="#2-1-2-基于语义标签" class="headerlink" title="2.1.2 基于语义标签"></a>2.1.2 基于语义标签</h4><p>这类方法很多时候和成对标签损失一起用<sup><a href="#fn_7" id="reffn_7">7</a></sup>。主要思想是：当我们有图片的标签时，只考虑pairwise信息没有充分利用到标签信息，故增加一个分类的损失来协助训练。</p>
-<script type="math/tex; mode=display">
-  \sum_{i=1}^{N}L(y_i, W^Tb_i)</script><p>主流的分类损失有3种：1）交叉熵损失；2）浮点向量投影得到的概率向量与哈希向量投影得到的二值向量的KL散度；3）L2损失。</p>
-<h4 id="2-1-3-基于相似度一致"><a href="#2-1-3-基于相似度一致" class="headerlink" title="2.1.3 基于相似度一致"></a>2.1.3 基于相似度一致</h4><p>假定$f$输入图片的浮点特征向量，$b$是输入图片的哈希向量。对于一个batch的浮点向量为$[f_1, f_2, ..,, f_N]$，哈希向量为$[b_1, b_2, …, b_N]$浮点向量构成的相似度矩阵$S_f=[[f_1f_1^T, f_1f_2^T, …, f_1f_N^T]; …; [f_Nf_1^T, f_Nf_2^T, …, f_Nf_N^T]]$。哈希向量构成的相似度矩阵$S_b=[[b_1b_1^T, b_1b_2^T, …, b_1b_N^T]; …; [b_Nb_1^T, b_Nb_2^T, …, b_Nb_N^T]]$</p>
-<p>在实际的应用中有直接用MSE来使相似度矩阵最小化；也有利用对比学习思想构造相似度矩阵用交叉语义一致性来优化<sup><a href="#fn_19" id="reffn_19">19</a></sup>。也有直接利用Batch本身标签的相似度矩阵$S$来和哈希形成相似度矩阵$S_b$进行优化<sup><a href="#fn_24" id="reffn_24">24</a></sup>。</p>
-<h4 id="2-1-4-基于重建"><a href="#2-1-4-基于重建" class="headerlink" title="2.1.4 基于重建"></a>2.1.4 基于重建</h4><p>此类方法一般基于VAE架构。其核心思想是：将浮点向量进行哈希量化后，再用哈希向量进行重建，优化目标是重建后与重建前的feature map尽可能的接近。</p>
-<p>比较有代表性的工作是TBH<sup><a href="#fn_17" id="reffn_17">17</a></sup>，相较基础的VAE架构同时引入了图卷积来进一步同步哈希向量和浮点向量的特征。</p>
-<h4 id="2-1-5-其它相似度维持损失函数"><a href="#2-1-5-其它相似度维持损失函数" class="headerlink" title="2.1.5 其它相似度维持损失函数"></a>2.1.5 其它相似度维持损失函数</h4><p>如优化检索排序的 SortedNCE<sup><a href="#fn_29" id="reffn_29">29</a></sup>，优化哈希码聚类分布的 CSQ<sup><a href="#fn_15" id="reffn_15">15</a></sup>，基于优化对比量化损失的MeCoQ<sup><a href="#fn_31" id="reffn_31">31</a></sup>等。</p>
-<h4 id="2-1-6-优化哈希码一些约束"><a href="#2-1-6-优化哈希码一些约束" class="headerlink" title="2.1.6 优化哈希码一些约束"></a>2.1.6 优化哈希码一些约束</h4><p>为了避免过拟合往往会增加一个量化损失，使得生成的哈希向量与原向量量化误差别太大。一版采用L2损失或SmoothL1。</p>
-<script type="math/tex; mode=display">
-L_{quan} = \sum_i ^ N{ \parallel b_i - f_i \parallel ^2 }</script><p>为了使得生成的哈希向量差异性更大往往会增加一个平衡损失使得生成的哈希向量1/-1的个数差不多。</p>
-<script type="math/tex; mode=display">
-L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符号函数不可导的解决方案"><a href="#2-2-符号函数不可导的解决方案" class="headerlink" title="2.2 符号函数不可导的解决方案"></a>2.2 符号函数不可导的解决方案</h3><h4 id="2-2-1-改写梯度更新规则"><a href="#2-2-1-改写梯度更新规则" class="headerlink" title="2.2.1 改写梯度更新规则"></a>2.2.1 改写梯度更新规则</h4><p>Pytorch提供了自定义梯度更新的接口。有代表性的GreedyHash<sup><a href="#fn_9" id="reffn_9">9</a></sup>所用的方法前向过程调用符号函数，反向过程不计算符号函数的梯度。实现的关键是Pytorch中的<code>torch.autograd.Function</code></p>
+<p>$$<br>
+p(s_{ij} | \mathcal{B}) =<br>
+\left {<br>
+\begin{aligned}<br>
+&amp; \sigma(\Omega_{ij})   , &amp; s_{ij} = 1 \<br>
+&amp; 1 - \sigma(\Omega_{ij}) , &amp; s_{ij} = 0<br>
+\end{aligned}<br>
+\right.<br>
+$$<br>
+其中 $\Omega_{ij}=\frac{1}{2}b_i<sup>Tb_j$，$\sigma(\Omega_{ij})=\frac{1}{1+e</sup>{-\Omega_{ij} } }$</p>
+<p>其目标函数为<br>
+$$<br>
+\mathop{min}\limits_{\mathcal{B} }=- \mathop{log} p(\mathcal{S}|\mathcal{B})=-\sum \limits_{s_{ij} \in \mathcal{S} } \mathop{log} p(s_{ij}| \mathcal{B})=-\sum \limits_{s_{ij} \in \mathcal{S} } (s_{ij} \Omega_{ij} - log(1 + e^{\Omega_{ij} }))<br>
+$$<br>
+<strong>此类方法的扩展有</strong>：引入margin来优化类内方差与类间方差<sup class="footnote-ref"><a href="#fn6" id="fnref6">[6]</a></sup>、扩展到三元组<sup class="footnote-ref"><a href="#fn7" id="fnref7">[7]</a></sup>、基于类别分布进行加权<sup class="footnote-ref"><a href="#fn8" id="fnref8">[8]</a></sup>、亦或是扩展到多标签<sup class="footnote-ref"><a href="#fn9" id="fnref9">[9]</a></sup></p>
+<h4 id="2-1-2-基于语义标签">2.1.2 基于语义标签</h4>
+<p>这类方法很多时候和成对标签损失一起用<sup class="footnote-ref"><a href="#fn4" id="fnref4:1">[4:1]</a></sup>。主要思想是：当我们有图片的标签时，只考虑pairwise信息没有充分利用到标签信息，故增加一个分类的损失来协助训练。<br>
+$$<br>
+\sum_{i=1}^{N}L(y_i, W^Tb_i)<br>
+$$<br>
+主流的分类损失有3种：1）交叉熵损失；2）浮点向量投影得到的概率向量与哈希向量投影得到的二值向量的KL散度；3）L2损失。</p>
+<h4 id="2-1-3-基于相似度一致">2.1.3 基于相似度一致</h4>
+<p>假定$f$输入图片的浮点特征向量，$b$是输入图片的哈希向量。对于一个batch的浮点向量为$[f_1, f_2, …, f_N]$，哈希向量为$[b_1, b_2, …, b_N]$浮点向量构成的相似度矩阵$S_f=[[f_1f_1^T, f_1f_2^T, …, f_1f_N^T]; …; [f_Nf_1^T, f_Nf_2^T, …, f_Nf_N<sup>T]]$。哈希向量构成的相似度矩阵$S_b=[[b_1b_1</sup>T, b_1b_2^T, …, b_1b_N^T]; …; [b_Nb_1^T, b_Nb_2^T, …, b_Nb_N^T]]$</p>
+<p>在实际的应用中有直接用MSE来使相似度矩阵最小化；也有利用对比学习思想构造相似度矩阵用交叉语义一致性来优化<sup class="footnote-ref"><a href="#fn10" id="fnref10">[10]</a></sup>。也有直接利用Batch本身标签的相似度矩阵$S$来和哈希形成相似度矩阵$S_b$进行优化<sup class="footnote-ref"><a href="#fn11" id="fnref11">[11]</a></sup>。</p>
+<h4 id="2-1-4-基于重建">2.1.4 基于重建</h4>
+<p>此类方法一般基于VAE架构。其核心思想是：将浮点向量进行哈希量化后，再用哈希向量进行重建，优化目标是重建后与重建前的feature map尽可能的接近。</p>
+<p>比较有代表性的工作是TBH<sup class="footnote-ref"><a href="#fn12" id="fnref12">[12]</a></sup>，相较基础的VAE架构同时引入了图卷积来进一步同步哈希向量和浮点向量的特征。</p>
+<h4 id="2-1-5-其它相似度维持损失函数">2.1.5 其它相似度维持损失函数</h4>
+<p>如优化检索排序的 SortedNCE<sup class="footnote-ref"><a href="#fn13" id="fnref13">[13]</a></sup>，优化哈希码聚类分布的 CSQ<sup class="footnote-ref"><a href="#fn14" id="fnref14">[14]</a></sup>，基于优化对比量化损失的MeCoQ<sup class="footnote-ref"><a href="#fn15" id="fnref15">[15]</a></sup>等。</p>
+<h4 id="2-1-6-优化哈希码一些约束">2.1.6 优化哈希码一些约束</h4>
+<p>为了避免过拟合往往会增加一个量化损失，使得生成的哈希向量与原向量量化误差别太大。一版采用L2损失或SmoothL1。<br>
+$$<br>
+L_{quan} = \sum_i ^ N{ \parallel b_i - f_i \parallel ^2 }<br>
+$$<br>
+为了使得生成的哈希向量差异性更大往往会增加一个平衡损失使得生成的哈希向量1/-1的个数差不多。<br>
+$$<br>
+L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2<br>
+$$</p>
+<h3 id="2-2-符号函数不可导的解决方案">2.2 符号函数不可导的解决方案</h3>
+<h4 id="2-2-1-改写梯度更新规则">2.2.1 改写梯度更新规则</h4>
+<p>Pytorch提供了自定义梯度更新的接口。有代表性的GreedyHash<sup class="footnote-ref"><a href="#fn16" id="fnref16">[16]</a></sup>所用的方法前向过程调用符号函数，反向过程不计算符号函数的梯度。实现的关键是Pytorch中的<code>torch.autograd.Function</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GreedyHashLayer</span>(torch.autograd.Function):</span><br><span class="line"> </span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">ctx, <span class="built_in">input</span></span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">input</span>.sign()</span><br><span class="line"> </span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backward</span>(<span class="params">ctx, grad_output</span>):</span><br><span class="line">        <span class="keyword">return</span> grad_output</span><br></pre></td></tr></table></figure>
-<h4 id="2-2-2-基于“松弛”（relaxation）思想训练中替代符号函数为其它可导函数"><a href="#2-2-2-基于“松弛”（relaxation）思想训练中替代符号函数为其它可导函数" class="headerlink" title="2.2.2 基于“松弛”（relaxation）思想训练中替代符号函数为其它可导函数"></a>2.2.2 基于“松弛”（relaxation）思想训练中替代符号函数为其它可导函数</h4><p>此类方法是image hash最为常用的方法。核心思想是：在训练过程将二值化函数用一个可微的函数替代，在推理过程中再用符号函数进行二值化。</p>
-<p><img data-src="./images/image_hash_exp/HashNet_1.jpeg" alt><br><img data-src="/images/image_hash_exp/HashNet_1.jpeg" alt><br><!-- <img data-src="./images/image_hash_exp/HashNet_1.jpeg" width = "300" height = "200" alt="图片名称"/> --></p>
-<h2 id="3-构建专利图片哈希检索系统"><a href="#3-构建专利图片哈希检索系统" class="headerlink" title="3 构建专利图片哈希检索系统"></a>3 构建专利图片哈希检索系统</h2><h3 id="3-1-问题分析及技术选型"><a href="#3-1-问题分析及技术选型" class="headerlink" title="3.1 问题分析及技术选型"></a>3.1 问题分析及技术选型</h3><p>目前线上已刷1亿+外观向量，1亿+实用新型向量，4亿+发明专利向量。<strong>现阶段我们所用image2vector的pipeline为</strong><br>图像 -&gt; 去白边 -&gt; （提轮廓, shape-only）-&gt; resize -&gt; 特征提取 -&gt; PCA降维。若采用全量训练的方式更新image2vector模型需要全量重刷已有的向量，代价很大。并且目前自训的模型还达不到Facebook在数十亿规模数据训练的基础模型。</p>
+<h4 id="2-2-2-基于“松弛”（relaxation）思想训练中替代符号函数为其它可导函数">2.2.2 基于“松弛”（relaxation）思想训练中替代符号函数为其它可导函数</h4>
+<p>此类方法是image hash最为常用的方法。核心思想是：在训练过程将二值化函数用一个可微的函数替代，在推理过程中再用符号函数进行二值化。</p>
+<p><img src="./images/image_hash_exp/HashNet_1.jpeg" alt><br>
+<img src="/images/image_hash_exp/HashNet_1.jpeg" alt></p>
+<!-- <img src="./images/image_hash_exp/HashNet_1.jpeg" width = "300" height = "200" alt="图片名称"/> -->
+<h2 id="3-构建专利图片哈希检索系统">3 构建专利图片哈希检索系统</h2>
+<h3 id="3-1-问题分析及技术选型">3.1 问题分析及技术选型</h3>
+<p>目前线上已刷1亿+外观向量，1亿+实用新型向量，4亿+发明专利向量。<strong>现阶段我们所用image2vector的pipeline为</strong><br>
+图像 -&gt; 去白边 -&gt; （提轮廓, shape-only）-&gt; resize -&gt; 特征提取 -&gt; PCA降维。若采用全量训练的方式更新image2vector模型需要全量重刷已有的向量，代价很大。并且目前自训的模型还达不到Facebook在数十亿规模数据训练的基础模型。</p>
 <p>本实验采用的image2hash架构为：固定特征提取模块，在已有pipeline上增加一个哈希层达到image2hash的效果。通过对论文的调研，可以尝试的方向有两大类，一类基于模型，一类基于统计。</p>
-<p><img data-src="./images/image_hash_exp/arch.png" alt><br><img data-src="/images/image_hash_exp/arch.png" alt><br><!-- <img data-src="./images/image_hash_exp/arch.png" height = "500" alt="arch"/> --></p>
-<h4 id="3-1-1-采用模型训练向量哈希参数"><a href="#3-1-1-采用模型训练向量哈希参数" class="headerlink" title="3.1.1 采用模型训练向量哈希参数"></a>3.1.1 采用模型训练向量哈希参数</h4><p>与论文场景不同，此处需要将特征提取模块（backbone）的权重全部冻结，只训练哈希层的权重。主要有三类可行的方法：</p>
+<p><img src="./images/image_hash_exp/arch.png" alt><br>
+<img src="/images/image_hash_exp/arch.png" alt></p>
+<!-- <img src="./images/image_hash_exp/arch.png" height = "500" alt="arch"/> -->
+<h4 id="3-1-1-采用模型训练向量哈希参数">3.1.1 采用模型训练向量哈希参数</h4>
+<p>与论文场景不同，此处需要将特征提取模块（backbone）的权重全部冻结，只训练哈希层的权重。主要有三类可行的方法：</p>
 <p>1）可用公开数据结合标签语义损失+量化损失+平衡损失等进行训练。</p>
 <p>2）用专利数据采用自监督的方法进行训练。</p>
 <p>3）亦或者直接用最小化浮点向量和哈希向量的量化误差进行训练。</p>
-<h5 id="3-1-1-1基于开源数据训练哈希参数"><a href="#3-1-1-1基于开源数据训练哈希参数" class="headerlink" title="3.1.1.1基于开源数据训练哈希参数"></a>3.1.1.1基于开源数据训练哈希参数</h5><p>为了快速验证模型效果，首先在imagenet100上进行验证。复现了几个主流的基于深度学习训练哈希层的方法，并在imagenet100上进行测试。（Dbhash是参考Dbnet思想构建的方法）。从结果上，当模型收敛，几类方法的mAP差距不大，但Dbhash的收敛速度特别快，<strong>故采用Dbhash架构来训练哈希层</strong>。</p>
-<div class="table-container">
+<h5 id="3-1-1-1基于开源数据训练哈希参数">3.1.1.1基于开源数据训练哈希参数</h5>
+<p>为了快速验证模型效果，首先在imagenet100上进行验证。复现了几个主流的基于深度学习训练哈希层的方法，并在imagenet100上进行测试。（Dbhash是参考Dbnet思想构建的方法）。从结果上，当模型收敛，几类方法的mAP差距不大，但Dbhash的收敛速度特别快，<strong>故采用Dbhash架构来训练哈希层</strong>。</p>
 <table>
 <thead>
 <tr>
 <th>epoch</th>
 <th>Dbhash</th>
-<th>GreedyHash<sup><a href="#fn_9" id="reffn_9">9</a></sup></th>
-<th>CSQ<sup><a href="#fn_15" id="reffn_15">15</a></sup></th>
-<th>DHN<sup><a href="#fn_5" id="reffn_5">5</a></sup></th>
-<th>DPSH<sup><a href="#fn_3" id="reffn_3">3</a></sup></th>
+<th>GreedyHash<sup class="footnote-ref"><a href="#fn16" id="fnref16:1">[16:1]</a></sup></th>
+<th>CSQ<sup class="footnote-ref"><a href="#fn14" id="fnref14:1">[14:1]</a></sup></th>
+<th>DHN<sup class="footnote-ref"><a href="#fn17" id="fnref17">[17]</a></sup></th>
+<th>DPSH<sup class="footnote-ref"><a href="#fn5" id="fnref5:1">[5:1]</a></sup></th>
 </tr>
 </thead>
 <tbody>
@@ -480,34 +520,44 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>DBhash 模型架构</strong></p>
 <p>整体架构如下图所示，需要训练的哈希层为Thresh layer。</p>
-<p><img data-src="./images/image_hash_exp/DBhash_1.png" alt><br><img data-src="/images/image_hash_exp/DBhash_1.png" alt><br><!-- <img data-src="./images/image_hash_exp/DBhash_1.png"  height = "500" alt="图片名称"/> --></p>
+<p><img src="./images/image_hash_exp/DBhash_1.png" alt><br>
+<img src="/images/image_hash_exp/DBhash_1.png" alt></p>
+<!-- <img src="./images/image_hash_exp/DBhash_1.png"  height = "500" alt="图片名称"/> -->
 <p><strong>训练目标函数有3个</strong>：语义标签分类损失、KL散度及量化损失。（效果见3.3.1）</p>
 <p><strong>训练数据</strong>：imagenet1K</p>
-<p><strong>PS：</strong>在实际尝试的过程中发现一个坑。BN层的统计数据(running_mean, running_var)更新是在每一次训练阶段model.train()后的forward()方法中自动实现的，<strong>而不是</strong>在梯度计算与反向传播中更新optim.step()中完成。采用require_grad=False这个方法无法正常冻结。正确的冻结BN的方式是在模型训练时，把BN单独挑出来，重新设置其状态为eval (在model.train()之后覆盖training状态）</p>
+<p>**PS：**在实际尝试的过程中发现一个坑。BN层的统计数据(running_mean, running_var)更新是在每一次训练阶段model.train()后的forward()方法中自动实现的，<strong>而不是</strong>在梯度计算与反向传播中更新optim.step()中完成。采用require_grad=False这个方法无法正常冻结。正确的冻结BN的方式是在模型训练时，把BN单独挑出来，重新设置其状态为eval (在model.train()之后覆盖training状态）</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">set_bn_eval</span>(<span class="params">m</span>):</span><br><span class="line">    classname = m.__class__.__name__</span><br><span class="line">    <span class="keyword">if</span> classname.find(<span class="string">&#x27;BatchNorm&#x27;</span>) != -<span class="number">1</span>:</span><br><span class="line">      m.<span class="built_in">eval</span>()</span><br><span class="line"></span><br><span class="line">model.apply(set_bn_eval)</span><br></pre></td></tr></table></figure>
-<h5 id="3-1-1-2直接基于最小化量化误差来训练哈希层"><a href="#3-1-1-2直接基于最小化量化误差来训练哈希层" class="headerlink" title="3.1.1.2直接基于最小化量化误差来训练哈希层"></a>3.1.1.2直接基于最小化量化误差来训练哈希层</h5><p>本次POC主要尝试了iteration quantization（ITQ<sup><a href="#fn_43" id="reffn_43">43</a></sup>）。这个方法的核心思路是将经过PCA的向量数据集中的数据点映射到一个二进制超立方体的顶点上，使得对应的量化误差最小，从而而已得到对应该数据集优良的二进制编码。其核心思路是：找到最优的旋转投影矩阵来使得量化误差最小。代码实现如下：</p>
+<h5 id="3-1-1-2直接基于最小化量化误差来训练哈希层">3.1.1.2直接基于最小化量化误差来训练哈希层</h5>
+<p>本次POC主要尝试了iteration quantization（ITQ<sup class="footnote-ref"><a href="#fn18" id="fnref18">[18]</a></sup>）。这个方法的核心思路是将经过PCA的向量数据集中的数据点映射到一个二进制超立方体的顶点上，使得对应的量化误差最小，从而而已得到对应该数据集优良的二进制编码。其核心思路是：找到最优的旋转投影矩阵来使得量化误差最小。代码实现如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ITQ</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;training hash code by ITQ method&quot;&quot;&quot;</span></span><br><span class="line">    DEFAULT_DEVICE = torch.device(<span class="string">&quot;cuda&quot;</span>) <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> torch.device(<span class="string">&quot;cpu&quot;</span>)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, device=DEFAULT_DEVICE</span>):</span><br><span class="line">        self.device = device</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span> </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">train_pipeline</span>(<span class="params"></span></span><br><span class="line"><span class="params">            self, </span></span><br><span class="line"><span class="params">            vec_rtpath, </span></span><br><span class="line"><span class="params">            file_type, </span></span><br><span class="line"><span class="params">            pca_file=<span class="literal">None</span>, </span></span><br><span class="line"><span class="params">            checkpoints=<span class="literal">None</span>, </span></span><br><span class="line"><span class="params">            iterations=<span class="number">1000</span>, </span></span><br><span class="line"><span class="params">            thred=<span class="literal">None</span>, </span></span><br><span class="line"><span class="params">            debug=<span class="literal">False</span></span></span><br><span class="line"><span class="params">            </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        trainset = self.prepare_patent_data(</span><br><span class="line">            vec_rtpath, file_type, pca_file=pca_file, debug=debug</span><br><span class="line">        )</span><br><span class="line">        self.train(</span><br><span class="line">            trainset, checkpoints=checkpoints, iterations=iterations, thred=thred</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">prepare_patent_data</span>(<span class="params">self, vec_rtpath, file_type, pca_file=<span class="literal">None</span>, debug=<span class="literal">False</span></span>):</span><br><span class="line">        vector_ls, image_ls = VectorFileDecoder(file_type=file_type)(</span><br><span class="line">            vec_rtpath, sample_number=<span class="number">30</span> <span class="keyword">if</span> debug <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">if</span> pca_file <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            pca_func = <span class="keyword">lambda</span> x: x </span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            pca_func = PCA(pca_file)</span><br><span class="line">        vector_ls = [pca_func(np.array(i).reshape(<span class="number">1</span>, -<span class="number">1</span>)).reshape(-<span class="number">1</span>).tolist() <span class="keyword">for</span> i <span class="keyword">in</span> tqdm(vector_ls)]</span><br><span class="line">        vector_arr = np.array(vector_ls)  <span class="comment"># N * M</span></span><br><span class="line">        <span class="keyword">return</span> vector_arr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">self, trainset: np.ndarray, checkpoints=<span class="literal">None</span>, iterations=<span class="number">1000</span>, thred=<span class="literal">None</span></span>):</span><br><span class="line">        trainset_tensor = torch.from_numpy(trainset.astype(np.float32)).to(self.device)</span><br><span class="line">        V = trainset_tensor</span><br><span class="line">        nbits = trainset_tensor.shape[<span class="number">1</span>]</span><br><span class="line">        R = torch.randn(nbits, nbits).to(self.device) </span><br><span class="line">        torch.nn.init.orthogonal_(R)</span><br><span class="line">        origin_quan_loss = self.frobenius_norm(V.sign(), V)</span><br><span class="line">        <span class="keyword">if</span> thred <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            binary_vec = FaissSearchAPI.img2hash_by_thred(</span><br><span class="line">                trainset, thred, to_int8_compress=<span class="literal">False</span></span><br><span class="line">            ).astype(np.float32)</span><br><span class="line">            logger.info(<span class="string">f&quot;generate binary vector by OT method: binary vec shape: <span class="subst">&#123;binary_vec.shape&#125;</span>&quot;</span>)</span><br><span class="line">            origin_quan_loss_2 = self.frobenius_norm(torch.from_numpy(binary_vec).to(self.device), V)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            origin_quan_loss_2 = <span class="number">0.0000</span></span><br><span class="line"></span><br><span class="line">        best_quant_loss = <span class="number">1e10</span></span><br><span class="line">        best_R = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(iterations):</span><br><span class="line">            <span class="comment"># step 1: update B</span></span><br><span class="line">            V_tilde = V @ R </span><br><span class="line">            B = V_tilde.sign()</span><br><span class="line">            <span class="comment"># step2: update R </span></span><br><span class="line">            [S, _, S_tilde_transpose] = torch.svd(B.t() @ V)</span><br><span class="line">            R = (S_tilde_transpose.t() @ S.t())</span><br><span class="line"></span><br><span class="line">            quant_loss = self.frobenius_norm(B, V_tilde)</span><br><span class="line">            <span class="keyword">if</span> quant_loss &lt; best_quant_loss:</span><br><span class="line">                best_quant_loss = quant_loss</span><br><span class="line">                best_R = R </span><br><span class="line">            logger.info(<span class="string">f&quot;Iter: <span class="subst">&#123;i:04d&#125;</span> frobenius_norm: <span class="subst">&#123;quant_loss:<span class="number">.4</span>f&#125;</span>, BEST: <span class="subst">&#123;best_quant_loss:<span class="number">.4</span>f&#125;</span>, ORIGIN: <span class="subst">&#123;origin_quan_loss:<span class="number">.4</span>f&#125;</span>, ORI2: <span class="subst">&#123;origin_quan_loss_2:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> checkpoints:</span><br><span class="line">            np.savez(checkpoints, R=best_R.cpu().numpy()) </span><br><span class="line">             </span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">frobenius_norm</span>(<span class="params">B, V_tilde</span>) -&gt; <span class="built_in">float</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;$E = || B - V_tilde ||_&#123;F&#125;^&#123;2&#125;$&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> (B - V_tilde).<span class="built_in">pow</span>(<span class="number">2</span>).<span class="built_in">sum</span>().sqrt().item() / B.shape[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
-<h4 id="3-1-2-基于统计特征获得向量哈希参数"><a href="#3-1-2-基于统计特征获得向量哈希参数" class="headerlink" title="3.1.2 基于统计特征获得向量哈希参数"></a>3.1.2 基于统计特征获得向量哈希参数</h4><p>该方法的本质是挖掘浮点向量的数值分布统计特征，以最小化量化损失、平衡损失为目标来构建哈希层。基于最优传输理论（Op timal Transport, OT）的Bi-HalfNet<sup><a href="#fn_16" id="reffn_16">16</a></sup>。论文为什么写了很多，感兴趣可以看原文，这里主要讲怎么做。目前我们有1800w的专利图片向量，其构成的矩阵记为$\mathrm{M}=\{m_i |i=1,2,…,18000000  \}, m_i \in \mathbb{R}^{256}$,对于向量检索任务，向量$m_i$可以看作是对应图片$x_i$的表征。已知$m_i$是256维，基于OT理论的哈希方法是将$m_i$的每一维都当作一个特征。已知$m_i=[m_{i,1}, m_{i,2},…,m_{i,256}]$。将所有样本第一维的特征汇聚一起可得：$f_1=\{m_{i1}|i=1,2, …, 18000000 \}$，如何得到一个划分，将$f_i$转为二值化，且量化误差最小是我们的目标函数，即</p>
-<script type="math/tex; mode=display">
-\mathop{min} \sum \limits_{j} \parallel  f_i^{j} - b_i^{j} \parallel ^ 2</script><p>$f_i^{j}$表示在$f_i$的第$j$个样本；$b_i^{j}$表示$f_i^{j}$的哈希表示。</p>
+<h4 id="3-1-2-基于统计特征获得向量哈希参数">3.1.2 基于统计特征获得向量哈希参数</h4>
+<p>该方法的本质是挖掘浮点向量的数值分布统计特征，以最小化量化损失、平衡损失为目标来构建哈希层。基于最优传输理论（Op timal Transport, OT）的Bi-HalfNet<sup class="footnote-ref"><a href="#fn19" id="fnref19">[19]</a></sup>。论文为什么写了很多，感兴趣可以看原文，这里主要讲怎么做。目前我们有1800w的专利图片向量，其构成的矩阵记为$\mathrm{M}={m_i |i=1,2,…,18000000  }, m_i \in \mathbb{R}^{256}$,对于向量检索任务，向量$m_i$可以看作是对应图片$x_i$的表征。已知$m_i$是256维，基于OT理论的哈希方法是将$m_i$的每一维都当作一个特征。已知$m_i=[m_{i,1}, m_{i,2},…,m_{i,256}]$。将所有样本第一维的特征汇聚一起可得：$f_1={m_{i1}|i=1,2, …, 18000000 }$，如何得到一个划分，将$f_i$转为二值化，且量化误差最小是我们的目标函数，即<br>
+$$<br>
+\mathop{min} \sum \limits_{j} \parallel  f_i^{j} - b_i^{j} \parallel ^ 2<br>
+$$<br>
+$f_i<sup>{j}$表示在$f_i$的第$j$个样本；$b_i</sup>{j}$表示$f_i^{j}$的哈希表示。</p>
 <p>显然$\mathop{mean} (f_i)$是我们所需的解。但仅仅考虑量化误差没有兼顾哈希特征的丰富性，在实践中往往会加入一个平衡误差来使得一条哈希向量两个值的数量尽可能的接近。$f_i$的中位数是我们所需的解。</p>
-<p>综上所述，我们只需分别找到每一维的中位数作为该位置的划分，即可获得最小量化误差、最优平衡的哈希表征。 </p>
-<h3 id="3-2检索系统搭建"><a href="#3-2检索系统搭建" class="headerlink" title="3.2检索系统搭建"></a>3.2检索系统搭建</h3><p>Milvus 1.x并不支持哈希检索。本次POC采用Faiss平台搭建基于哈希的检索系统。（吐槽一下，faiss关于搭建哈希搜索的文档真的非常简略）里面有个大坑是插入哈希code导Faiss引擎是需要将哈希吗转为int8后在输入，随后需要将向量的维度变为 $\mathrm{dim} /8$</p>
+<p>综上所述，我们只需分别找到每一维的中位数作为该位置的划分，即可获得最小量化误差、最优平衡的哈希表征。</p>
+<h3 id="3-2检索系统搭建">3.2检索系统搭建</h3>
+<p>Milvus 1.x并不支持哈希检索。本次POC采用Faiss平台搭建基于哈希的检索系统。（吐槽一下，faiss关于搭建哈希搜索的文档真的非常简略）里面有个大坑是插入哈希code导Faiss引擎是需要将哈希吗转为int8后在输入，随后需要将向量的维度变为 $\mathrm{dim} /8$</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bytes2int8</span>(<span class="params">byte_vec</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    convert 0,1 matrix to uint8</span></span><br><span class="line"><span class="string">    shape: (N, M) -&gt; (N, M // 8)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span> byte_vec.ndim == <span class="number">2</span></span><br><span class="line">    mutiple = np.array([<span class="number">2</span>**i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>, -<span class="number">1</span>, -<span class="number">1</span>)]).reshape(<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line">    hash_code = byte_vec</span><br><span class="line">    hash_code_uint8 = np.concatenate(</span><br><span class="line">        [np.<span class="built_in">sum</span>(hash_code[:, i * <span class="number">8</span> : (i + <span class="number">1</span>) * <span class="number">8</span>] * mutiple, axis=<span class="number">1</span>, keepdims=<span class="literal">True</span>)</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(hash_code.shape[<span class="number">1</span>] // <span class="number">8</span>)],</span><br><span class="line">        axis=<span class="number">1</span></span><br><span class="line">    ).astype(np.uint8)</span><br><span class="line">    <span class="keyword">return</span> hash_code_uint8</span><br></pre></td></tr></table></figure>
-<h4 id="3-2-1索引构建"><a href="#3-2-1索引构建" class="headerlink" title="3.2.1索引构建"></a>3.2.1索引构建</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FaissSearchEngin</span>:</span><br><span class="line">    SUPPORT_INDEX_TYPE = <span class="built_in">set</span>(</span><br><span class="line">        [</span><br><span class="line">            <span class="string">&quot;binary_flat_ivf&quot;</span>,</span><br><span class="line">            <span class="string">&quot;binary_flat&quot;</span>,</span><br><span class="line">        ]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        index_type,</span></span><br><span class="line"><span class="params">        index_params=<span class="built_in">dict</span>(<span class="params"></span>),</span></span><br><span class="line"><span class="params">        index_rtpath=DEFAULT_INDEX_RTPATH,</span></span><br><span class="line"><span class="params">        vector=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">        img_name_ls=<span class="literal">None</span>, </span></span><br><span class="line"><span class="params">        reuse=<span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        logger=logger,</span></span><br><span class="line"><span class="params">        prefix = <span class="string">&#x27;&#x27;</span>, </span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            index_type(str): faiss index type</span></span><br><span class="line"><span class="string">            index_params(dict): faiss index create parameters</span></span><br><span class="line"><span class="string">            index_rtpath(str): faiss index rtpath</span></span><br><span class="line"><span class="string">            vector(np.ndarray, None): faiss index database</span></span><br><span class="line"><span class="string">            reuse(bool): always create index, whatever</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.logger = logger</span><br><span class="line">        self.reuse = reuse</span><br><span class="line">        self.index_type =  index_type</span><br><span class="line">        <span class="keyword">assert</span> (</span><br><span class="line">            index_type <span class="keyword">in</span> self.SUPPORT_INDEX_TYPE</span><br><span class="line">        ), <span class="string">f&quot;index type only support <span class="subst">&#123;self.SUPPORT_INDEX_TYPE&#125;</span> now!&quot;</span></span><br><span class="line">        self.vector = vector</span><br><span class="line">        self.img_name_ls = img_name_ls</span><br><span class="line">        <span class="keyword">if</span> self.vector <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            dim = vector.shape[<span class="number">1</span>] * <span class="number">8</span> <span class="keyword">if</span> <span class="string">&quot;binary&quot;</span> <span class="keyword">in</span> self.index_type <span class="keyword">else</span> vector.shape[<span class="number">1</span>]</span><br><span class="line">            index_params.update(<span class="built_in">dict</span>(dim=dim))</span><br><span class="line">        self.logger.info(<span class="string">f&quot;index params: <span class="subst">&#123;index_params&#125;</span>&quot;</span>)</span><br><span class="line">        self.index_save_rtpath = os.path.join(index_rtpath, index_type)</span><br><span class="line">        self.index_path = os.path.join(</span><br><span class="line">            self.index_save_rtpath,</span><br><span class="line">            <span class="string">f&quot;<span class="subst">&#123;prefix&#125;</span>_<span class="subst">&#123;<span class="string">&#x27;_&#x27;</span>.join([<span class="string">f&#x27;<span class="subst">&#123;k&#125;</span>_<span class="subst">&#123;v&#125;</span>&#x27;</span> <span class="keyword">for</span> k, v <span class="keyword">in</span> index_params.items()])&#125;</span>.index&quot;</span>,</span><br><span class="line">        )</span><br><span class="line">        self.index_params = index_params</span><br><span class="line">        checkdir(self.index_save_rtpath)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>):</span><br><span class="line">        self.check_index()</span><br><span class="line">        self.init_index_func(self.index_type)</span><br><span class="line">        self.index = self.build_index(</span><br><span class="line">            self.vector, index_params=self.index_params, index_path=self.index_path, reuse=self.reuse</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">check_index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> self.reuse <span class="keyword">and</span> self.vector <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">assert</span> os.path.exists(</span><br><span class="line">                self.index_path</span><br><span class="line">            ), <span class="string">f&quot;there are no index file, you should input [vector] parameters to create it&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">convert_byte_vector_2_uint8</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span> </span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init_index_func</span>(<span class="params">self, index_type</span>):</span><br><span class="line">        <span class="keyword">if</span> index_type == <span class="string">&quot;binary_flat_ivf&quot;</span>:</span><br><span class="line">            self._index_func = self._binary_flat_ivf</span><br><span class="line">            self.write_index_func = faiss.write_index_binary</span><br><span class="line">            self.read_index_func = faiss.read_index_binary</span><br><span class="line">        <span class="keyword">elif</span> index_type == <span class="string">&quot;binary_flat&quot;</span>:</span><br><span class="line">            self._index_func = self._binary_flat</span><br><span class="line">            self.write_index_func = faiss.write_index_binary</span><br><span class="line">            self.read_index_func = faiss.read_index_binary</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">self, query, search_params</span>):</span><br><span class="line">        D, I = self.index.search(query, **search_params)</span><br><span class="line">        <span class="keyword">return</span> D, I</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">build_index</span>(<span class="params">self, vector, index_path, index_params=<span class="built_in">dict</span>(<span class="params"></span>), reuse=<span class="literal">False</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;create faiss index&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> os.path.exists(index_path) <span class="keyword">and</span> reuse:</span><br><span class="line">            self.logger.info(<span class="string">f&quot;read index from exists file: <span class="subst">&#123;index_path&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> self.read_index_func(index_path)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            index_info = self._index_func(index_params)</span><br><span class="line">            vector = vector.astype(index_info.vec_dtype)</span><br><span class="line">            self.logger.info(<span class="string">f&quot;vector shape: <span class="subst">&#123;vector.shape&#125;</span>, dtype: <span class="subst">&#123;vector.dtype&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> index_info.need_train:</span><br><span class="line">                self.logger.info(<span class="string">f&quot;start train index, please wait...&quot;</span>)</span><br><span class="line">                _t = time.perf_counter()</span><br><span class="line">                index_info.index_func.train(vector)</span><br><span class="line">                self.logger.info(</span><br><span class="line">                    <span class="string">f&quot;train index finish, time consume: <span class="subst">&#123;time.perf_counter() - _t&#125;</span>s&quot;</span></span><br><span class="line">                )</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.logger.info(<span class="string">f&quot;current index type need not to train!&quot;</span>)</span><br><span class="line">            index_info.index_func.add(vector)</span><br><span class="line">            self.save_id_map(self.index_path.replace(<span class="string">&quot;.index&quot;</span>, <span class="string">&quot;_id_map.txt&quot;</span>))</span><br><span class="line">            self.logger.info(<span class="string">f&quot;save index file to <span class="subst">&#123;index_path&#125;</span>&quot;</span>)</span><br><span class="line">            self.write_index_func(index_info.index_func, index_path)</span><br><span class="line">            <span class="keyword">return</span> index_info.index_func</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_binary_flat</span>(<span class="params">self, params</span>):</span><br><span class="line">        index = faiss.IndexBinaryFlat(params.get(<span class="string">&quot;dim&quot;</span>))</span><br><span class="line">        <span class="keyword">return</span> index_info(index, <span class="literal">False</span>, np.uint8)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_binary_flat_ivf</span>(<span class="params">self, params</span>):</span><br><span class="line">        quantizer = faiss.IndexBinaryFlat(params.get(<span class="string">&quot;dim&quot;</span>))</span><br><span class="line">        index = faiss.IndexBinaryIVF(quantizer, params.get(<span class="string">&quot;dim&quot;</span>), params.get(<span class="string">&quot;nlist&quot;</span>))</span><br><span class="line">        <span class="keyword">return</span> index_info(index, <span class="literal">True</span>, np.uint8)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">self, index, training_vector</span>):</span><br><span class="line">        self.logger.info(<span class="string">f&quot;start train index&quot;</span>)</span><br><span class="line">        _t = time.perf_counter()</span><br><span class="line">        index.train(training_vector)</span><br><span class="line">        self.logger.info(<span class="string">f&quot;train index succeed! time consume: <span class="subst">&#123;time.perf_counter() - _t:<span class="number">.4</span>f&#125;</span>s&quot;</span>)</span><br><span class="line">        <span class="keyword">assert</span> index.is_trained, <span class="string">f&quot;index not train!&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">save_id_map</span>(<span class="params">self, save_path</span>):</span><br><span class="line">        checkdir(os.path.split(save_path)[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(save_path, <span class="string">&#x27;w&#x27;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(<span class="string">&#x27;\n&#x27;</span>.join(self.img_name_ls))</span><br></pre></td></tr></table></figure>
-<h3 id="3-3-指标及web-demo搭建"><a href="#3-3-指标及web-demo搭建" class="headerlink" title="3.3 指标及web demo搭建"></a>3.3 指标及web demo搭建</h3><h4 id="3-3-1-指标评估"><a href="#3-3-1-指标评估" class="headerlink" title="3.3.1 指标评估"></a>3.3.1 指标评估</h4><p>分别在灰度测试集和轮廓测试集来测试哈希检索的效果。baseline为SQ8量化 （目前线上的量化方式）</p>
+<h4 id="3-2-1索引构建">3.2.1索引构建</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FaissSearchEngin</span>:</span><br><span class="line">    SUPPORT_INDEX_TYPE = <span class="built_in">set</span>(</span><br><span class="line">        [</span><br><span class="line">            <span class="string">&quot;binary_flat_ivf&quot;</span>,</span><br><span class="line">            <span class="string">&quot;binary_flat&quot;</span>,</span><br><span class="line">        ]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        index_type,</span></span><br><span class="line"><span class="params">        index_params=<span class="built_in">dict</span>(<span class="params"></span>),</span></span><br><span class="line"><span class="params">        index_rtpath=DEFAULT_INDEX_RTPATH,</span></span><br><span class="line"><span class="params">        vector=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">        img_name_ls=<span class="literal">None</span>, </span></span><br><span class="line"><span class="params">        reuse=<span class="literal">True</span>,</span></span><br><span class="line"><span class="params">        logger=logger,</span></span><br><span class="line"><span class="params">        prefix = <span class="string">&#x27;&#x27;</span>, </span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            index_type(str): faiss index type</span></span><br><span class="line"><span class="string">            index_params(dict): faiss index create parameters</span></span><br><span class="line"><span class="string">            index_rtpath(str): faiss index rtpath</span></span><br><span class="line"><span class="string">            vector(np.ndarray, None): faiss index database</span></span><br><span class="line"><span class="string">            reuse(bool): always create index, whatever</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.logger = logger</span><br><span class="line">        self.reuse = reuse</span><br><span class="line">        self.index_type =  index_type</span><br><span class="line">        <span class="keyword">assert</span> (</span><br><span class="line">            index_type <span class="keyword">in</span> self.SUPPORT_INDEX_TYPE</span><br><span class="line">        ), <span class="string">f&quot;index type only support <span class="subst">&#123;self.SUPPORT_INDEX_TYPE&#125;</span> now!&quot;</span></span><br><span class="line">        self.vector = vector</span><br><span class="line">        self.img_name_ls = img_name_ls</span><br><span class="line">        <span class="keyword">if</span> self.vector <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            dim = vector.shape[<span class="number">1</span>] * <span class="number">8</span> <span class="keyword">if</span> <span class="string">&quot;binary&quot;</span> <span class="keyword">in</span> self.index_type <span class="keyword">else</span> vector.shape[<span class="number">1</span>]</span><br><span class="line">            index_params.update(<span class="built_in">dict</span>(dim=dim))</span><br><span class="line">        self.logger.info(<span class="string">f&quot;index params: <span class="subst">&#123;index_params&#125;</span>&quot;</span>)</span><br><span class="line">        self.index_save_rtpath = os.path.join(index_rtpath, index_type)</span><br><span class="line">        self.index_path = os.path.join(</span><br><span class="line">            self.index_save_rtpath,</span><br><span class="line">            <span class="string">f&quot;<span class="subst">&#123;prefix&#125;</span>_<span class="subst">&#123;<span class="string">&#x27;_&#x27;</span>.join([<span class="string">f&#x27;<span class="subst">&#123;k&#125;</span>_<span class="subst">&#123;v&#125;</span>&#x27;</span> <span class="keyword">for</span> k, v <span class="keyword">in</span> index_params.items()])&#125;</span>.index&quot;</span>,</span><br><span class="line">        )</span><br><span class="line">        self.index_params = index_params</span><br><span class="line">        checkdir(self.index_save_rtpath)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>):</span><br><span class="line">        self.check_index()</span><br><span class="line">        self.init_index_func(self.index_type)</span><br><span class="line">        self.index = self.build_index(</span><br><span class="line">            self.vector, index_params=self.index_params, index_path=self.index_path, reuse=self.reuse</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">check_index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> self.reuse <span class="keyword">and</span> self.vector <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">assert</span> os.path.exists(</span><br><span class="line">                self.index_path</span><br><span class="line">            ), <span class="string">f&quot;there are no index file, you should input [vector] parameters to create it&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">convert_byte_vector_2_uint8</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span> </span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init_index_func</span>(<span class="params">self, index_type</span>):</span><br><span class="line">        <span class="keyword">if</span> index_type == <span class="string">&quot;binary_flat_ivf&quot;</span>:</span><br><span class="line">            self._index_func = self._binary_flat_ivf</span><br><span class="line">            self.write_index_func = faiss.write_index_binary</span><br><span class="line">            self.read_index_func = faiss.read_index_binary</span><br><span class="line">        <span class="keyword">elif</span> index_type == <span class="string">&quot;binary_flat&quot;</span>:</span><br><span class="line">            self._index_func = self._binary_flat</span><br><span class="line">            self.write_index_func = faiss.write_index_binary</span><br><span class="line">            self.read_index_func = faiss.read_index_binary</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">self, query, search_params</span>):</span><br><span class="line">        D, I = self.index.search(query, **search_params)</span><br><span class="line">        <span class="keyword">return</span> D, I</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">build_index</span>(<span class="params">self, vector, index_path, index_params=<span class="built_in">dict</span>(<span class="params"></span>), reuse=<span class="literal">False</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;create faiss index&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> os.path.exists(index_path) <span class="keyword">and</span> reuse:</span><br><span class="line">            self.logger.info(<span class="string">f&quot;read index from exists file: <span class="subst">&#123;index_path&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> self.read_index_func(index_path)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            index_info = self._index_func(index_params)</span><br><span class="line">            vector = vector.astype(index_info.vec_dtype)</span><br><span class="line">            self.logger.info(<span class="string">f&quot;vector shape: <span class="subst">&#123;vector.shape&#125;</span>, dtype: <span class="subst">&#123;vector.dtype&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> index_info.need_train:</span><br><span class="line">                self.logger.info(<span class="string">f&quot;start train index, please wait...&quot;</span>)</span><br><span class="line">                _t = time.perf_counter()</span><br><span class="line">                index_info.index_func.train(vector)</span><br><span class="line">                self.logger.info(</span><br><span class="line">                    <span class="string">f&quot;train index finish, time consume: <span class="subst">&#123;time.perf_counter() - _t&#125;</span>s&quot;</span></span><br><span class="line">                )</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.logger.info(<span class="string">f&quot;current index type need not to train!&quot;</span>)</span><br><span class="line">            index_info.index_func.add(vector)</span><br><span class="line">            self.save_id_map(self.index_path.replace(<span class="string">&quot;.index&quot;</span>, <span class="string">&quot;_id_map.txt&quot;</span>))</span><br><span class="line">            self.logger.info(<span class="string">f&quot;save index file to <span class="subst">&#123;index_path&#125;</span>&quot;</span>)</span><br><span class="line">            self.write_index_func(index_info.index_func, index_path)</span><br><span class="line">            <span class="keyword">return</span> index_info.index_func</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_binary_flat</span>(<span class="params">self, params</span>):</span><br><span class="line">        index = faiss.IndexBinaryFlat(params.get(<span class="string">&quot;dim&quot;</span>))</span><br><span class="line">        <span class="keyword">return</span> index_info(index, <span class="literal">False</span>, np.uint8)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_binary_flat_ivf</span>(<span class="params">self, params</span>):</span><br><span class="line">        quantizer = faiss.IndexBinaryFlat(params.get(<span class="string">&quot;dim&quot;</span>))</span><br><span class="line">        index = faiss.IndexBinaryIVF(quantizer, params.get(<span class="string">&quot;dim&quot;</span>), params.get(<span class="string">&quot;nlist&quot;</span>))</span><br><span class="line">        <span class="keyword">return</span> index_info(index, <span class="literal">True</span>, np.uint8)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">self, index, training_vector</span>):</span><br><span class="line">        self.logger.info(<span class="string">f&quot;start train index&quot;</span>)</span><br><span class="line">        _t = time.perf_counter()</span><br><span class="line">        index.train(training_vector)</span><br><span class="line">        self.logger.info(<span class="string">f&quot;train index succeed! time consume: <span class="subst">&#123;time.perf_counter() - _t:<span class="number">.4</span>f&#125;</span>s&quot;</span>)</span><br><span class="line">        <span class="keyword">assert</span> index.is_trained, <span class="string">f&quot;index not train!&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">save_id_map</span>(<span class="params">self, save_path</span>):</span><br><span class="line">        checkdir(os.path.split(save_path)[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(save_path, <span class="string">&#x27;w&#x27;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(<span class="string">&#x27;\n&#x27;</span>.join(self.img_name_ls))</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-指标及web-demo搭建">3.3 指标及web demo搭建</h3>
+<h4 id="3-3-1-指标评估">3.3.1 指标评估</h4>
+<p>分别在灰度测试集和轮廓测试集来测试哈希检索的效果。baseline为SQ8量化 （目前线上的量化方式）</p>
 <p>候选数据集：140W 外观专利图片数据</p>
 <p>测试集：外观专利灰度测试集、外观专利轮廓测试集</p>
-<h5 id="3-3-1-1-精度评估"><a href="#3-3-1-1-精度评估" class="headerlink" title="3.3.1.1 精度评估"></a>3.3.1.1 精度评估</h5><ul>
+<h5 id="3-3-1-1-精度评估">3.3.1.1 精度评估</h5>
+<ul>
 <li>灰度测试集的效果对比</li>
 </ul>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -573,15 +623,15 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-</div>
-<p><img data-src="./images/image_hash_exp/GrayTestsetSearchResult.png" alt><br><!-- <img data-src="./images/image_hash_exp/GrayTestsetSearchResult.png"  height = "500" alt="graytest"/> --></p>
+<p><img src="./images/image_hash_exp/GrayTestsetSearchResult.png" alt></p>
+<!-- <img src="./images/image_hash_exp/GrayTestsetSearchResult.png"  height = "500" alt="graytest"/> -->
 <ul>
 <li>轮廓测试集的效果对比</li>
 </ul>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -647,16 +697,18 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-</div>
-<p><img data-src="./images/image_hash_exp/GrayTestsetSearchResult-4894374.png" alt><br><!-- <img data-src="./images/image_hash_exp/GrayTestsetSearchResult-4894374.png"  height = "500" alt="graytest"/> --></p>
+<p><img src="./images/image_hash_exp/GrayTestsetSearchResult-4894374.png" alt></p>
+<!-- <img src="./images/image_hash_exp/GrayTestsetSearchResult-4894374.png"  height = "500" alt="graytest"/> -->
 <p>从实验结果看，采用OT方法进行哈希量化能达到最优的效果。并且该方法实现简单，能够复用已刷的向量。</p>
-<h5 id="3-3-3-2-向量存储评估"><a href="#3-3-3-2-向量存储评估" class="headerlink" title="3.3.3.2 向量存储评估"></a>3.3.3.2 向量存储评估</h5><p>以目前256维向量为例。线上采用SQ8量化相较float32存储占用少4倍。哈希量化存储量化在SQ8基础上还能少8倍。</p>
-<h5 id="3-3-1-3-检索速度评估"><a href="#3-3-1-3-检索速度评估" class="headerlink" title="3.3.1.3 检索速度评估"></a>3.3.1.3 检索速度评估</h5><p>候选集大小：140W</p>
+<h5 id="3-3-3-2-向量存储评估">3.3.3.2 向量存储评估</h5>
+<p>以目前256维向量为例。线上采用SQ8量化相较float32存储占用少4倍。哈希量化存储量化在SQ8基础上还能少8倍。</p>
+<h5 id="3-3-1-3-检索速度评估">3.3.1.3 检索速度评估</h5>
+<p>候选集大小：140W</p>
 <p>测试数据量： 100条</p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -675,12 +727,12 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 </tr>
 <tr>
 <td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>哈希检索较SQ8速度提升50.31%</strong></p>
-<h4 id="3-3-2-web-demo"><a href="#3-3-2-web-demo" class="headerlink" title="3.3.2 web demo"></a>3.3.2 web demo</h4><div class="table-container">
+<h4 id="3-3-2-web-demo">3.3.2 web demo</h4>
 <table>
 <thead>
 <tr>
@@ -699,11 +751,12 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 </tr>
 <tr>
 <td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-</div>
-<h3 id="3-4-结论"><a href="#3-4-结论" class="headerlink" title="3.4 结论"></a>3.4 结论</h3><p>本次POC调研了image hash的常用算法，并在专利图片检索中进行尝试。并对哈希搜索的精度、速度有了一定的认知。</p>
+<h3 id="3-4-结论">3.4 结论</h3>
+<p>本次POC调研了image hash的常用算法，并在专利图片检索中进行尝试。并对哈希搜索的精度、速度有了一定的认知。</p>
 <p><strong>精度上：</strong></p>
 <ul>
 <li>灰度测试集在top1k召回上，哈希搜索较向量搜索降低8.17% （77.35% -&gt; 69.18%）。但是哈希检索top3K的召回能达到76.12%。若后续做重排的话，粗筛可用哈希搜索。</li>
@@ -722,7 +775,8 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <li>对于粗精排检索范式，可在粗排阶段用哈希做召回，精排阶段用浮点向量做排序。</li>
 <li>精度要求不高的检索场景可用哈希检索。</li>
 </ol>
-<h2 id="4-附录：图片哈希检索的经典论文"><a href="#4-附录：图片哈希检索的经典论文" class="headerlink" title="4 附录：图片哈希检索的经典论文"></a>4 附录：图片哈希检索的经典论文</h2><h3 id="4-1-图片哈希检索经典论文"><a href="#4-1-图片哈希检索经典论文" class="headerlink" title="4.1 图片哈希检索经典论文"></a>4.1 图片哈希检索经典论文</h3><div class="table-container">
+<h2 id="4-附录：图片哈希检索的经典论文">4 附录：图片哈希检索的经典论文</h2>
+<h3 id="4-1-图片哈希检索经典论文">4.1 图片哈希检索经典论文</h3>
 <table>
 <thead>
 <tr>
@@ -737,7 +791,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left">CNNH<sup><a href="#fn_1" id="reffn_1">1</a></sup></td>
+<td style="text-align:left">CNNH<sup class="footnote-ref"><a href="#fn20" id="fnref20">[20]</a></sup></td>
 <td>有监督</td>
 <td></td>
 <td></td>
@@ -746,7 +800,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2014</td>
 </tr>
 <tr>
-<td style="text-align:left">SDH<sup><a href="#fn_36" id="reffn_36">36</a></sup></td>
+<td style="text-align:left">SDH<sup class="footnote-ref"><a href="#fn21" id="fnref21">[21]</a></sup></td>
 <td>有监督</td>
 <td>标签语义损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE,MNIST,ImageNet100</td>
@@ -755,7 +809,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2015</td>
 </tr>
 <tr>
-<td style="text-align:left">DSH<sup><a href="#fn_2" id="reffn_2">2</a></sup></td>
+<td style="text-align:left">DSH<sup class="footnote-ref"><a href="#fn3" id="fnref3:1">[3:1]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE</td>
@@ -764,7 +818,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2016</td>
 </tr>
 <tr>
-<td style="text-align:left">DPSH<sup><a href="#fn_3" id="reffn_3">3</a></sup></td>
+<td style="text-align:left">DPSH<sup class="footnote-ref"><a href="#fn5" id="fnref5:2">[5:2]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE</td>
@@ -773,7 +827,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2016</td>
 </tr>
 <tr>
-<td style="text-align:left">DTSH<sup><a href="#fn_4" id="reffn_4">4</a></sup></td>
+<td style="text-align:left">DTSH<sup class="footnote-ref"><a href="#fn7" id="fnref7:1">[7:1]</a></sup></td>
 <td>有监督</td>
 <td>三元组对损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE</td>
@@ -782,7 +836,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2016</td>
 </tr>
 <tr>
-<td style="text-align:left">DHN<sup><a href="#fn_5" id="reffn_5">5</a></sup></td>
+<td style="text-align:left">DHN<sup class="footnote-ref"><a href="#fn17" id="fnref17:1">[17:1]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE,Flickr</td>
@@ -791,7 +845,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2016</td>
 </tr>
 <tr>
-<td style="text-align:left">HashNet<sup><a href="#fn_6" id="reffn_6">6</a></sup></td>
+<td style="text-align:left">HashNet<sup class="footnote-ref"><a href="#fn8" id="fnref8:1">[8:1]</a></sup></td>
 <td>有监督</td>
 <td>加权成对标签损失，量化损失</td>
 <td>ImageNet100,NUS-WIDE,MS COCO</td>
@@ -800,7 +854,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2017</td>
 </tr>
 <tr>
-<td style="text-align:left">DSDH<sup><a href="#fn_7" id="reffn_7">7</a></sup></td>
+<td style="text-align:left">DSDH<sup class="footnote-ref"><a href="#fn4" id="fnref4:2">[4:2]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，语义标签损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE</td>
@@ -809,7 +863,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2017</td>
 </tr>
 <tr>
-<td style="text-align:left">LCDSH<sup><a href="#fn_8" id="reffn_8">8</a></sup></td>
+<td style="text-align:left">LCDSH<sup class="footnote-ref"><a href="#fn22" id="fnref22">[22]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE</td>
@@ -818,7 +872,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2017</td>
 </tr>
 <tr>
-<td style="text-align:left">DAPH<sup><a href="#fn_32" id="reffn_32">32</a></sup></td>
+<td style="text-align:left">DAPH<sup class="footnote-ref"><a href="#fn23" id="fnref23">[23]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，平衡损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE</td>
@@ -827,7 +881,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2017</td>
 </tr>
 <tr>
-<td style="text-align:left">GreedyHash<sup><a href="#fn_9" id="reffn_9">9</a></sup></td>
+<td style="text-align:left">GreedyHash<sup class="footnote-ref"><a href="#fn16" id="fnref16:2">[16:2]</a></sup></td>
 <td>有监督</td>
 <td>语义标签损失，量化损失</td>
 <td>CIFAR-10,ImageNet100</td>
@@ -836,7 +890,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2018</td>
 </tr>
 <tr>
-<td style="text-align:left">DCH<sup><a href="#fn_25" id="reffn_25">25</a></sup></td>
+<td style="text-align:left">DCH<sup class="footnote-ref"><a href="#fn24" id="fnref24">[24]</a></sup></td>
 <td>有监督</td>
 <td></td>
 <td>CIFAR-10,NUS-WIDE,MS COCO</td>
@@ -845,7 +899,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2018</td>
 </tr>
 <tr>
-<td style="text-align:left">DFH<sup><a href="#fn_10" id="reffn_10">10</a></sup></td>
+<td style="text-align:left">DFH<sup class="footnote-ref"><a href="#fn6" id="fnref6:1">[6:1]</a></sup></td>
 <td>有监督</td>
 <td>带margin的成对标签损失，语义标签损失，量化损失</td>
 <td>CIFAR-10,ImageNet100</td>
@@ -854,7 +908,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2019</td>
 </tr>
 <tr>
-<td style="text-align:left">IDHN<sup><a href="#fn_11" id="reffn_11">11</a></sup></td>
+<td style="text-align:left">IDHN<sup class="footnote-ref"><a href="#fn9" id="fnref9:1">[9:1]</a></sup></td>
 <td>有监督，多标签</td>
 <td>成对多标签损失，量化损失</td>
 <td>NUS-WIDE,Flickr,VOC2012,IAPRTC12</td>
@@ -863,7 +917,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2019</td>
 </tr>
 <tr>
-<td style="text-align:left">DAGH<sup><a href="#fn_12" id="reffn_12">12</a></sup></td>
+<td style="text-align:left">DAGH<sup class="footnote-ref"><a href="#fn25" id="fnref25">[25]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，量化损失，平衡损失</td>
 <td>CIFAR-10,NUS-WIDE,Fashion-MNIST</td>
@@ -872,7 +926,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2019</td>
 </tr>
 <tr>
-<td style="text-align:left">DSHSD<sup><a href="#fn_13" id="reffn_13">13</a></sup></td>
+<td style="text-align:left">DSHSD<sup class="footnote-ref"><a href="#fn26" id="fnref26">[26]</a></sup></td>
 <td>有监督</td>
 <td>成对标签L2损失，语义标签损失</td>
 <td>CIFAR-10,NUS-WIDE,ImageNet100</td>
@@ -881,7 +935,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2019</td>
 </tr>
 <tr>
-<td style="text-align:left">DistillHash<sup><a href="#fn_30" id="reffn_30">30</a></sup></td>
+<td style="text-align:left">DistillHash<sup class="footnote-ref"><a href="#fn27" id="fnref27">[27]</a></sup></td>
 <td>无监督</td>
 <td></td>
 <td></td>
@@ -890,7 +944,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2019</td>
 </tr>
 <tr>
-<td style="text-align:left">SPDAQ<sup><a href="#fn_38" id="reffn_38">38</a></sup></td>
+<td style="text-align:left">SPDAQ<sup class="footnote-ref"><a href="#fn28" id="fnref28">[28]</a></sup></td>
 <td>有监督</td>
 <td>相似度维持损失，平衡损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE-21,NUS-WIDE-81,MS-COCO</td>
@@ -899,7 +953,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2019</td>
 </tr>
 <tr>
-<td style="text-align:left">DBDH<sup><a href="#fn_14" id="reffn_14">14</a></sup></td>
+<td style="text-align:left">DBDH<sup class="footnote-ref"><a href="#fn29" id="fnref29">[29]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，平衡损失</td>
 <td>MNIST,CIFAR-10,CIFAR-20,Youtube Faces</td>
@@ -908,7 +962,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">CSQ<sup><a href="#fn_15" id="reffn_15">15</a></sup></td>
+<td style="text-align:left">CSQ<sup class="footnote-ref"><a href="#fn14" id="fnref14:2">[14:2]</a></sup></td>
 <td>有监督</td>
 <td>平衡损失，基于聚类的量化损失</td>
 <td>UCF101,HMDB51,ImageNet100, MS COCO,NUS-WIDE</td>
@@ -917,7 +971,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">TBH<sup><a href="#fn_17" id="reffn_17">17</a></sup></td>
+<td style="text-align:left">TBH<sup class="footnote-ref"><a href="#fn12" id="fnref12:1">[12:1]</a></sup></td>
 <td>无监督</td>
 <td>重建损失，差异判别损失</td>
 <td>CIFAR-10,NUS-WIDE,MS COCO</td>
@@ -926,7 +980,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">DPAH<sup><a href="#fn_22" id="reffn_22">22</a></sup></td>
+<td style="text-align:left">DPAH<sup class="footnote-ref"><a href="#fn30" id="fnref30">[30]</a></sup></td>
 <td>有监督，多标签</td>
 <td>差异正则损失，类间距离差异损失</td>
 <td>NUS-WIDE,MS COCO,ImageNet100</td>
@@ -935,7 +989,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">ICICH<sup><a href="#fn_23" id="reffn_23">23</a></sup></td>
+<td style="text-align:left">ICICH<sup class="footnote-ref"><a href="#fn31" id="fnref31">[31]</a></sup></td>
 <td>有监督，跨模态</td>
 <td>-</td>
 <td>WIKI,MIRFlickr,NUS-WIDE</td>
@@ -944,7 +998,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">TSDH<sup><a href="#fn_24" id="reffn_24">24</a></sup></td>
+<td style="text-align:left">TSDH<sup class="footnote-ref"><a href="#fn11" id="fnref11:1">[11:1]</a></sup></td>
 <td>有监督</td>
 <td>类内中心损失，相似矩阵一致性损失</td>
 <td>CIFAR-10,NUS-WIDE,Flickr25K</td>
@@ -953,7 +1007,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">DDDH<sup><a href="#fn_26" id="reffn_26">26</a></sup></td>
+<td style="text-align:left">DDDH<sup class="footnote-ref"><a href="#fn32" id="fnref32">[32]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，语义标签损失，量化损失</td>
 <td>CIFAR-10,NUS-WIDE,MS COCO</td>
@@ -962,7 +1016,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">EDSH<sup><a href="#fn_27" id="reffn_27">27</a></sup></td>
+<td style="text-align:left">EDSH<sup class="footnote-ref"><a href="#fn33" id="fnref33">[33]</a></sup></td>
 <td>有监督，跨模态</td>
 <td>-</td>
 <td>WIKI,MIRFlickr25K,NUS-WIDE</td>
@@ -971,7 +1025,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">SPLH<sup><a href="#fn_40" id="reffn_40">40</a></sup></td>
+<td style="text-align:left">SPLH<sup class="footnote-ref"><a href="#fn34" id="fnref34">[34]</a></sup></td>
 <td>有监督</td>
 <td>相似度维持损失</td>
 <td>CIFAR-10,MINIST,Places205</td>
@@ -980,7 +1034,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2020</td>
 </tr>
 <tr>
-<td style="text-align:left">Bi-Half Net<sup><a href="#fn_16" id="reffn_16">16</a></sup></td>
+<td style="text-align:left">Bi-Half Net<sup class="footnote-ref"><a href="#fn19" id="fnref19:1">[19:1]</a></sup></td>
 <td>无监督</td>
 <td>量化损失</td>
 <td>CIFAR-10,MS COCO,MNIST,UCF101,HMDB51</td>
@@ -989,7 +1043,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2021</td>
 </tr>
 <tr>
-<td style="text-align:left">CIBHash<sup><a href="#fn_18" id="reffn_18">18</a></sup></td>
+<td style="text-align:left">CIBHash<sup class="footnote-ref"><a href="#fn35" id="fnref35">[35]</a></sup></td>
 <td>无监督，对比</td>
 <td>对比损失</td>
 <td>CIFAR-10,NUS-WIDE,MS COCO</td>
@@ -998,7 +1052,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2021</td>
 </tr>
 <tr>
-<td style="text-align:left">CIMON<sup><a href="#fn_19" id="reffn_19">19</a></sup></td>
+<td style="text-align:left">CIMON<sup class="footnote-ref"><a href="#fn10" id="fnref10:1">[10:1]</a></sup></td>
 <td>有监督，对比</td>
 <td>平行语义一致性损失，交叉语义一致性损失，对比一致损失</td>
 <td>CIFAR-10,NUS-WIDE,Flickr25K</td>
@@ -1007,7 +1061,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2021</td>
 </tr>
 <tr>
-<td style="text-align:left">SPQ<sup><a href="#fn_20" id="reffn_20">20</a></sup></td>
+<td style="text-align:left">SPQ<sup class="footnote-ref"><a href="#fn36" id="fnref36">[36]</a></sup></td>
 <td>有监督，对比</td>
 <td>交叉对比损失</td>
 <td>CIFAR-10,NUS-WIDE,Flickr25K</td>
@@ -1016,7 +1070,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2021</td>
 </tr>
 <tr>
-<td style="text-align:left">BNNH<sup><a href="#fn_28" id="reffn_28">28</a></sup></td>
+<td style="text-align:left">BNNH<sup class="footnote-ref"><a href="#fn37" id="fnref37">[37]</a></sup></td>
 <td>有监督</td>
 <td>相似度维持损失，激活感知损失</td>
 <td>CIFAR-10,MNIST,ImageNet100</td>
@@ -1025,7 +1079,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2021</td>
 </tr>
 <tr>
-<td style="text-align:left">DCDH<sup><a href="#fn_34" id="reffn_34">34</a></sup></td>
+<td style="text-align:left">DCDH<sup class="footnote-ref"><a href="#fn38" id="fnref38">[38]</a></sup></td>
 <td>有监督</td>
 <td>成对标签损失，类间差异似然损失，语义标签回归损失</td>
 <td>YouTube Faces,FaceScrub,CFW-60K,VGGFace2</td>
@@ -1034,7 +1088,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2021</td>
 </tr>
 <tr>
-<td style="text-align:left">DATE<sup><a href="#fn_35" id="reffn_35">35</a></sup></td>
+<td style="text-align:left">DATE<sup class="footnote-ref"><a href="#fn39" id="fnref39">[39]</a></sup></td>
 <td>无监督</td>
 <td>语义维持损失，对比损失</td>
 <td>CIFAR-10,Flickr25K,NUSWIDE-10,NUSWIDE-21</td>
@@ -1043,7 +1097,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2021</td>
 </tr>
 <tr>
-<td style="text-align:left">SortedNCE<sup><a href="#fn_29" id="reffn_29">29</a></sup></td>
+<td style="text-align:left">SortedNCE<sup class="footnote-ref"><a href="#fn13" id="fnref13:1">[13:1]</a></sup></td>
 <td>有监督</td>
 <td>排序损失</td>
 <td>CIFAR-10,NUS-WIDE,MS COCO</td>
@@ -1052,7 +1106,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2022</td>
 </tr>
 <tr>
-<td style="text-align:left">MeCoQ<sup><a href="#fn_31" id="reffn_31">31</a></sup></td>
+<td style="text-align:left">MeCoQ<sup class="footnote-ref"><a href="#fn15" id="fnref15:1">[15:1]</a></sup></td>
 <td>无监督</td>
 <td>对比量化损失</td>
 <td>CIFAR-10,NUS-WIDE,Flickr25K</td>
@@ -1061,7 +1115,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2022</td>
 </tr>
 <tr>
-<td style="text-align:left">DSPH<sup><a href="#fn_33" id="reffn_33">33</a></sup></td>
+<td style="text-align:left">DSPH<sup class="footnote-ref"><a href="#fn40" id="fnref40">[40]</a></sup></td>
 <td>有监督，多模态</td>
 <td>-</td>
 <td>MIRFlickr,NUS-WIDE,Websearch</td>
@@ -1070,7 +1124,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2022</td>
 </tr>
 <tr>
-<td style="text-align:left">Domino<sup><a href="#fn_37" id="reffn_37">37</a></sup></td>
+<td style="text-align:left">Domino<sup class="footnote-ref"><a href="#fn41" id="fnref41">[41]</a></sup></td>
 <td>有监督，跨模态</td>
 <td>-</td>
 <td>CelebA,ImageNet,MIMIC-CXR,EEG</td>
@@ -1079,7 +1133,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2022</td>
 </tr>
 <tr>
-<td style="text-align:left">VTS<sup><a href="#fn_39" id="reffn_39">39</a></sup></td>
+<td style="text-align:left">VTS<sup class="footnote-ref"><a href="#fn42" id="fnref42">[42]</a></sup></td>
 <td>有监督</td>
 <td>-</td>
 <td>CIFAR-10,NUS-WIDE,MS COCO,ImageNet100</td>
@@ -1088,7 +1142,7 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td>2022</td>
 </tr>
 <tr>
-<td style="text-align:left">CLIP4hashing<sup><a href="#fn_21" id="reffn_21">21</a></sup></td>
+<td style="text-align:left">CLIP4hashing<sup class="footnote-ref"><a href="#fn43" id="fnref43">[43]</a></sup></td>
 <td>有监督</td>
 <td>相似矩阵一致性损失</td>
 <td>MSRVTT,DiDeMo,MSVD</td>
@@ -1103,139 +1157,102 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-</div>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><blockquote id="fn_1">
-<sup>1</sup>. <a target="_blank" rel="noopener" href="https://scholar.google.com/scholar?hl=zh-CN&amp;as_sdt=0%2C5&amp;q=Supervised+Hashing++for+Image+Retrieval+via+Image+Representation+Learning&amp;btnG=">Supervised Hashing  for Image Retrieval via Image Representation Learning</a><a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_2">
-<sup>2</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2016/papers/Liu_Deep_Supervised_Hashing_CVPR_2016_paper.pdf">Deep Supervised Hashing for Fast Image Retrieval</a><a href="#reffn_2" title="Jump back to footnote [2] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_3">
-<sup>3</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1511.03855.pdf">Feature Learning based Deep Supervised Hashing with Pairwise Labels</a><a href="#reffn_3" title="Jump back to footnote [3] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_4">
-<sup>4</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1612.03900.pdf">Deep Supervised Hashing with Triplet Labels</a><a href="#reffn_4" title="Jump back to footnote [4] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_5">
-<sup>5</sup>. <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/10235/10094">Deep Hashing Network for Efficient Similarity Retrieval</a><a href="#reffn_5" title="Jump back to footnote [5] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_6">
-<sup>6</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_ICCV_2017/papers/Cao_HashNet_Deep_Learning_ICCV_2017_paper.pdf">HashNet: Deep Learning to Hash by Continuation</a><a href="#reffn_6" title="Jump back to footnote [6] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_7">
-<sup>7</sup>. <a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2017/file/e94f63f579e05cb49c05c2d050ead9c0-Paper.pdf">Deep Supervised Discrete Hashing</a><a href="#reffn_7" title="Jump back to footnote [7] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_8">
-<sup>8</sup>. <a target="_blank" rel="noopener" href="https://www.ijcai.org/proceedings/2017/0499.pdf">Locality-Constrained Deep Supervised Hashing for Image Retrieval</a><a href="#reffn_8" title="Jump back to footnote [8] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_9">
-<sup>9</sup>. <a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2018/file/13f3cf8c531952d72e5847c4183e6910-Paper.pdf">Greedy Hash: Towards Fast Optimization for Accurate Hash Coding in CNN</a><a href="#reffn_9" title="Jump back to footnote [9] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_10">
-<sup>10</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1909.00206.pdf">Push for Quantization: Deep Fisher Hashing</a><a href="#reffn_10" title="Jump back to footnote [10] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_11">
-<sup>11</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1803.02987.pdf">Improved Deep Hashing with Soft Pairwise Similarity for Multi-label Image Retrieval</a><a href="#reffn_11" title="Jump back to footnote [11] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_12">
-<sup>12</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_ICCV_2019/papers/Chen_Deep_Supervised_Hashing_With_Anchor_Graph_ICCV_2019_paper.pdf">Deep Supervised Hashing with Anchor Graph</a><a href="#reffn_12" title="Jump back to footnote [12] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_13">
-<sup>13</sup>. <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/8648432/">Deep Supervised Hashing Based on Stable Distribution</a><a href="#reffn_13" title="Jump back to footnote [13] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_14">
-<sup>14</sup>. <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0925231220306032">Deep balanced discrete hashing for image retrieval</a><a href="#reffn_14" title="Jump back to footnote [14] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_15">
-<sup>15</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2020/papers/Yuan_Central_Similarity_Quantization_for_Efficient_Image_and_Video_Retrieval_CVPR_2020_paper.pdf">Central Similarity Quantization for Efficient Image and Video Retrieval</a><a href="#reffn_15" title="Jump back to footnote [15] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_16">
-<sup>16</sup>. <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/16296/16103">Deep Unsupervised Image Hashing by Maximizing Bit Entropy</a><a href="#reffn_16" title="Jump back to footnote [16] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_17">
-<sup>17</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2020/papers/Shen_Auto-Encoding_Twin-Bottleneck_Hashing_CVPR_2020_paper.pdf">Auto-Encoding twin bottleneck hashing</a><a href="#reffn_17" title="Jump back to footnote [17] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_18">
-<sup>18</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2105.06138.pdf">Unsupervised Hashing with Contrastive Information Bottleneck</a><a href="#reffn_18" title="Jump back to footnote [18] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_19">
-<sup>19</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2010.07804.pdf">CIMON: Towards High-quality Hash Codes</a><a href="#reffn_19" title="Jump back to footnote [19] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_20">
-<sup>20</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/ICCV2021/papers/Jang_Self-Supervised_Product_Quantization_for_Deep_Unsupervised_Image_Retrieval_ICCV_2021_paper.pdf">Self-supervised Product Quantization for Deep Unsupervised Image Retrieval</a><a href="#reffn_20" title="Jump back to footnote [20] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_21">
-<sup>21</sup>. <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3512527.3531381">CLIP4Hashing: Unsupervised Deep Hashing for Cross-Modal Video-Text Retrieval</a><a href="#reffn_21" title="Jump back to footnote [21] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_22">
-<sup>22</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_WACV_2020/papers/Wang_Deep_Position-Aware_Hashing_for_Semantic_Continuous_Image_Retrieval_WACV_2020_paper.pdf">Deep Position-Aware Hashing for Semantic Continuous Image Retrieval</a><a href="#reffn_22" title="Jump back to footnote [22] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_23">
-<sup>23</sup>. <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0306457319305357">Label consistent locally linear embedding based cross-modal hashing</a><a href="#reffn_23" title="Jump back to footnote [23] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_24">
-<sup>24</sup>. <a target="_blank" rel="noopener" href="https://see.xidian.edu.cn/faculty/chdeng/Welcome%20to%20Cheng%20Deng&#39;s%20Homepage_files/Papers/Journal/TNNLS2020_Cheng.pdf">Two-Stream Deep Hashing With Class-Specific Centers for Supervised Image Search</a><a href="#reffn_24" title="Jump back to footnote [24] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_25">
-<sup>25</sup>. <a target="_blank" rel="noopener" href="http://openaccess.thecvf.com/content_cvpr_2018/papers/Cao_Deep_Cauchy_Hashing_CVPR_2018_paper.pdf">Deep Cauchy Hashing for Hamming Space Retrieval</a><a href="#reffn_25" title="Jump back to footnote [25] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_26">
-<sup>26</sup>. <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0306457320307834">Discriminative dual-stream deep hashing for large-scale image retrieval</a><a href="#reffn_26" title="Jump back to footnote [26] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_27">
-<sup>27</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1905.01304.pdf">Efficient Discrete Supervised Hashing for Large-scale Cross-modal Retrieval</a><a href="#reffn_27" title="Jump back to footnote [27] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_28">
-<sup>28</sup>. <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3404835.3462896">Binary Neural Network Hashing for Image Retrieval</a><a href="#reffn_28" title="Jump back to footnote [28] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_29">
-<sup>29</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2201.13322.pdf">Learning to Hash Naturally Sorts</a><a href="#reffn_29" title="Jump back to footnote [29] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_30">
-<sup>30</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2019/papers/Yang_DistillHash_Unsupervised_Deep_Hashing_by_Distilling_Data_Pairs_CVPR_2019_paper.pdf">DistillHash: Unsupervised Deep Hashing by Distilling Data Pairs</a><a href="#reffn_30" title="Jump back to footnote [30] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_31">
-<sup>31</sup>. <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/20147/19906">Contrastive Quantization with Code Memory for Unsupervised Image Retrieval</a><a href="#reffn_31" title="Jump back to footnote [31] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_32">
-<sup>32</sup>. <a target="_blank" rel="noopener" href="https://cfm.uestc.edu.cn/~fshen/DAPH.pdf">Deep Asymmetric Pairwise Hashing</a><a href="#reffn_32" title="Jump back to footnote [32] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_33">
-<sup>33</sup>. <a target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Shujuan-Ji/publication/359796301_An_efficient_dual_semantic_preserving_hashing_for_cross-modal_retrieval/links/625680cf328abe6281538210/An-efficient-dual-semantic-preserving-hashing-for-cross-modal-retrieval.pdf">An efficient dual semantic preserving hashing for cross-modal retrieval</a><a href="#reffn_33" title="Jump back to footnote [33] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_34">
-<sup>34</sup>. <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0031320321001631">Deep center-based dual-constrained hashing for discriminative face image retrieval</a><a href="#reffn_34" title="Jump back to footnote [34] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_35">
-<sup>35</sup>. <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3474085.3475570">A Statistical Approach to Mining Semantic Similarity for Deep Unsupervised Hashing</a><a href="#reffn_35" title="Jump back to footnote [35] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_36">
-<sup>36</sup>. <a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2015/papers/Shen_Supervised_Discrete_Hashing_2015_CVPR_paper.pdf">Supervised Discrete Hashing</a><a href="#reffn_36" title="Jump back to footnote [36] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_37">
-<sup>37</sup>. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.14960">Domino: Discovering systematic errors with cross-modal embeddings</a><a href="#reffn_37" title="Jump back to footnote [37] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_38">
-<sup>38</sup>. <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/4828">Similarity preserving deep asymmetric quantization for image retrieval</a><a href="#reffn_38" title="Jump back to footnote [38] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_39">
-<sup>39</sup>. <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/9859900/">Vision transformer hashing for image retrieval</a><a href="#reffn_39" title="Jump back to footnote [39] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_40">
-<sup>40</sup>. <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/9046296/">Similarity-preserving linkage hashing for online image retrieval</a><a href="#reffn_40" title="Jump back to footnote [40] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_41">
-<sup>41</sup>. <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/1162229/">Vector quantization</a><a href="#reffn_41" title="Jump back to footnote [41] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_42">
-<sup>42</sup>. <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/5432202/">Product quantization for nearest neighbor search</a><a href="#reffn_42" title="Jump back to footnote [42] in the text."> &#8617;</a>
-</blockquote>
-<blockquote id="fn_43">
-<sup>43</sup>. <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/6296665/">Iterative quantization: A procrustean approach to learning binary codes for large-scale image retrieval</a><a href="#reffn_43" title="Jump back to footnote [43] in the text."> &#8617;</a>
-</blockquote>
+<h2 id="Reference">Reference</h2>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/1162229/">Vector quantization</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/5432202/">Product quantization for nearest neighbor search</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2016/papers/Liu_Deep_Supervised_Hashing_CVPR_2016_paper.pdf">Deep Supervised Hashing for Fast Image Retrieval</a> <a href="#fnref3" class="footnote-backref">↩︎</a> <a href="#fnref3:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2017/file/e94f63f579e05cb49c05c2d050ead9c0-Paper.pdf">Deep Supervised Discrete Hashing</a> <a href="#fnref4" class="footnote-backref">↩︎</a> <a href="#fnref4:1" class="footnote-backref">↩︎</a> <a href="#fnref4:2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn5" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1511.03855.pdf">Feature Learning based Deep Supervised Hashing with Pairwise Labels</a> <a href="#fnref5" class="footnote-backref">↩︎</a> <a href="#fnref5:1" class="footnote-backref">↩︎</a> <a href="#fnref5:2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn6" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1909.00206.pdf">Push for Quantization: Deep Fisher Hashing</a> <a href="#fnref6" class="footnote-backref">↩︎</a> <a href="#fnref6:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn7" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1612.03900.pdf">Deep Supervised Hashing with Triplet Labels</a> <a href="#fnref7" class="footnote-backref">↩︎</a> <a href="#fnref7:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn8" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_ICCV_2017/papers/Cao_HashNet_Deep_Learning_ICCV_2017_paper.pdf">HashNet: Deep Learning to Hash by Continuation</a> <a href="#fnref8" class="footnote-backref">↩︎</a> <a href="#fnref8:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn9" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1803.02987.pdf">Improved Deep Hashing with Soft Pairwise Similarity for Multi-label Image Retrieval</a> <a href="#fnref9" class="footnote-backref">↩︎</a> <a href="#fnref9:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn10" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2010.07804.pdf">CIMON: Towards High-quality Hash Codes</a> <a href="#fnref10" class="footnote-backref">↩︎</a> <a href="#fnref10:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn11" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://see.xidian.edu.cn/faculty/chdeng/Welcome%20to%20Cheng%20Deng's%20Homepage_files/Papers/Journal/TNNLS2020_Cheng.pdf">Two-Stream Deep Hashing With Class-Specific Centers for Supervised Image Search</a> <a href="#fnref11" class="footnote-backref">↩︎</a> <a href="#fnref11:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn12" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2020/papers/Shen_Auto-Encoding_Twin-Bottleneck_Hashing_CVPR_2020_paper.pdf">Auto-Encoding twin bottleneck hashing</a> <a href="#fnref12" class="footnote-backref">↩︎</a> <a href="#fnref12:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn13" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2201.13322.pdf">Learning to Hash Naturally Sorts</a> <a href="#fnref13" class="footnote-backref">↩︎</a> <a href="#fnref13:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn14" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2020/papers/Yuan_Central_Similarity_Quantization_for_Efficient_Image_and_Video_Retrieval_CVPR_2020_paper.pdf">Central Similarity Quantization for Efficient Image and Video Retrieval</a> <a href="#fnref14" class="footnote-backref">↩︎</a> <a href="#fnref14:1" class="footnote-backref">↩︎</a> <a href="#fnref14:2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn15" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/20147/19906">Contrastive Quantization with Code Memory for Unsupervised Image Retrieval</a> <a href="#fnref15" class="footnote-backref">↩︎</a> <a href="#fnref15:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn16" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2018/file/13f3cf8c531952d72e5847c4183e6910-Paper.pdf">Greedy Hash: Towards Fast Optimization for Accurate Hash Coding in CNN</a> <a href="#fnref16" class="footnote-backref">↩︎</a> <a href="#fnref16:1" class="footnote-backref">↩︎</a> <a href="#fnref16:2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn17" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/10235/10094">Deep Hashing Network for Efficient Similarity Retrieval</a> <a href="#fnref17" class="footnote-backref">↩︎</a> <a href="#fnref17:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn18" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/6296665/">Iterative quantization: A procrustean approach to learning binary codes for large-scale image retrieval</a> <a href="#fnref18" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn19" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/16296/16103">Deep Unsupervised Image Hashing by Maximizing Bit Entropy</a> <a href="#fnref19" class="footnote-backref">↩︎</a> <a href="#fnref19:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn20" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://scholar.google.com/scholar?hl=zh-CN&amp;as_sdt=0%2C5&amp;q=Supervised+Hashing++for+Image+Retrieval+via+Image+Representation+Learning&amp;btnG=">Supervised Hashing  for Image Retrieval via Image Representation Learning</a> <a href="#fnref20" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn21" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2015/papers/Shen_Supervised_Discrete_Hashing_2015_CVPR_paper.pdf">Supervised Discrete Hashing</a> <a href="#fnref21" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn22" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.ijcai.org/proceedings/2017/0499.pdf">Locality-Constrained Deep Supervised Hashing for Image Retrieval</a> <a href="#fnref22" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn23" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://cfm.uestc.edu.cn/~fshen/DAPH.pdf">Deep Asymmetric Pairwise Hashing</a> <a href="#fnref23" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn24" class="footnote-item"><p><a target="_blank" rel="noopener" href="http://openaccess.thecvf.com/content_cvpr_2018/papers/Cao_Deep_Cauchy_Hashing_CVPR_2018_paper.pdf">Deep Cauchy Hashing for Hamming Space Retrieval</a> <a href="#fnref24" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn25" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_ICCV_2019/papers/Chen_Deep_Supervised_Hashing_With_Anchor_Graph_ICCV_2019_paper.pdf">Deep Supervised Hashing with Anchor Graph</a> <a href="#fnref25" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn26" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/8648432/">Deep Supervised Hashing Based on Stable Distribution</a> <a href="#fnref26" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn27" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2019/papers/Yang_DistillHash_Unsupervised_Deep_Hashing_by_Distilling_Data_Pairs_CVPR_2019_paper.pdf">DistillHash: Unsupervised Deep Hashing by Distilling Data Pairs</a> <a href="#fnref27" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn28" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/4828">Similarity preserving deep asymmetric quantization for image retrieval</a> <a href="#fnref28" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn29" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0925231220306032">Deep balanced discrete hashing for image retrieval</a> <a href="#fnref29" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn30" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_WACV_2020/papers/Wang_Deep_Position-Aware_Hashing_for_Semantic_Continuous_Image_Retrieval_WACV_2020_paper.pdf">Deep Position-Aware Hashing for Semantic Continuous Image Retrieval</a> <a href="#fnref30" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn31" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0306457319305357">Label consistent locally linear embedding based cross-modal hashing</a> <a href="#fnref31" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn32" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0306457320307834">Discriminative dual-stream deep hashing for large-scale image retrieval</a> <a href="#fnref32" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn33" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1905.01304.pdf">Efficient Discrete Supervised Hashing for Large-scale Cross-modal Retrieval</a> <a href="#fnref33" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn34" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/9046296/">Similarity-preserving linkage hashing for online image retrieval</a> <a href="#fnref34" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn35" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2105.06138.pdf">Unsupervised Hashing with Contrastive Information Bottleneck</a> <a href="#fnref35" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn36" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/ICCV2021/papers/Jang_Self-Supervised_Product_Quantization_for_Deep_Unsupervised_Image_Retrieval_ICCV_2021_paper.pdf">Self-supervised Product Quantization for Deep Unsupervised Image Retrieval</a> <a href="#fnref36" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn37" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3404835.3462896">Binary Neural Network Hashing for Image Retrieval</a> <a href="#fnref37" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn38" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S0031320321001631">Deep center-based dual-constrained hashing for discriminative face image retrieval</a> <a href="#fnref38" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn39" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3474085.3475570">A Statistical Approach to Mining Semantic Similarity for Deep Unsupervised Hashing</a> <a href="#fnref39" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn40" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Shujuan-Ji/publication/359796301_An_efficient_dual_semantic_preserving_hashing_for_cross-modal_retrieval/links/625680cf328abe6281538210/An-efficient-dual-semantic-preserving-hashing-for-cross-modal-retrieval.pdf">An efficient dual semantic preserving hashing for cross-modal retrieval</a> <a href="#fnref40" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn41" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.14960">Domino: Discovering systematic errors with cross-modal embeddings</a> <a href="#fnref41" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn42" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/9859900/">Vision transformer hashing for image retrieval</a> <a href="#fnref42" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn43" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3512527.3531381">CLIP4Hashing: Unsupervised Deep Hashing for Cross-Modal Video-Text Retrieval</a> <a href="#fnref43" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
 
     </div>
 
@@ -1437,7 +1454,6 @@ L_{balance}=\frac{1}{N} \parallel BB^T - I \parallel ^2</script><h3 id="2-2-符�
 
   
   <script src="/myhz0606/lib/anime.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
   <script src="/myhz0606/lib/velocity/velocity.min.js"></script>
   <script src="/myhz0606/lib/velocity/velocity.ui.min.js"></script>
