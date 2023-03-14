@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/myhz0606/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/myhz0606/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/myhz0606/images/favicon.ico">
+  <link rel="mask-icon" href="/myhz0606/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/myhz0606/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/myhz0606/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/myhz0606/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null,"valine":{"enable":true,"appId":null,"appKey":null,"serverURLs":null,"placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":true,"comment_count":true,"recordIP":false}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="DDPM技术小结 (denoising diffusion probabilistic) 1 从直觉上理解DDPM 在详细推到公式之前，我们先从直觉上理解一下什么是扩散 对于常规的生成模型，如GAN，VAE，它直接从噪声数据生成图像，我们不妨记噪声数据为\(z\),其生成的图片为\(x\) 对于常规的生成模型： 学习一个解码函数(即我们需要学习的模型)\(p\)，实现 $p(z)&#x3D;x $ \[ z">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDPM(denoising diffusion probabilistic)技术小结">
+<meta property="og:url" content="https://github.com/myhz0606/2023/02/20/DDPM/index.html">
+<meta property="og:site_name" content="莫叶何竹">
+<meta property="og:description" content="DDPM技术小结 (denoising diffusion probabilistic) 1 从直觉上理解DDPM 在详细推到公式之前，我们先从直觉上理解一下什么是扩散 对于常规的生成模型，如GAN，VAE，它直接从噪声数据生成图像，我们不妨记噪声数据为\(z\),其生成的图片为\(x\) 对于常规的生成模型： 学习一个解码函数(即我们需要学习的模型)\(p\)，实现 $p(z)&#x3D;x $ \[ z">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/myhz0606/2023/02/20/DDPM/images/DDPM/algorithm.png">
+<meta property="og:image" content="https://github.com/images/DDPM/algorithm.png">
+<meta property="og:image" content="https://github.com/images/DDPM%E6%8A%80%E6%9C%AF%E5%B0%8F%E7%BB%93%20(denoising%20diffusion%20probabilistic)/DDPM_algorithm.png">
+<meta property="og:image" content="https://github.com/myhz0606/2023/02/20/DDPM/images/DDPM/DDPM_algorithm.png">
+<meta property="article:published_time" content="2023-02-20T03:13:00.000Z">
+<meta property="article:modified_time" content="2023-03-14T05:41:20.760Z">
+<meta property="article:author" content="wwjiang">
+<meta property="article:tag" content="DDPM">
+<meta property="article:tag" content="AIGC">
+<meta property="article:tag" content="diffusion model">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/myhz0606/2023/02/20/DDPM/images/DDPM/algorithm.png">
+
+<link rel="canonical" href="https://github.com/myhz0606/2023/02/20/DDPM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DDPM(denoising diffusion probabilistic)技术小结 | 莫叶何竹</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/myhz0606/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">莫叶何竹</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/myhz0606/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/myhz0606/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/myhz0606/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/myhz0606/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/myhz0606" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/myhz0606/2023/02/20/DDPM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/myhz0606/images/avatar.gif">
+      <meta itemprop="name" content="wwjiang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="莫叶何竹">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DDPM(denoising diffusion probabilistic)技术小结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-20 11:13:00" itemprop="dateCreated datePublished" datetime="2023-02-20T11:13:00+08:00">2023-02-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-14 13:41:20" itemprop="dateModified" datetime="2023-03-14T13:41:20+08:00">2023-03-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/myhz0606/categories/diffusion-model/" itemprop="url" rel="index"><span itemprop="name">diffusion model</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>16 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="ddpm技术小结-denoising-diffusion-probabilistic">DDPM技术小结
+(denoising diffusion probabilistic)</h1>
+<h2 id="从直觉上理解ddpm">1 从直觉上理解DDPM</h2>
+<p>在详细推到公式之前，我们先从直觉上理解一下什么是扩散</p>
+<p>对于常规的生成模型，如GAN，VAE，它直接从噪声数据生成图像，我们不妨记噪声数据为<span class="math inline">\(z\)</span>,其生成的图片为<span class="math inline">\(x\)</span></p>
+<p><strong>对于常规的生成模型</strong>：</p>
+<p>学习一个解码函数(即我们需要学习的模型)<span class="math inline">\(p\)</span>，实现 $p(z)=x $ <span class="math display">\[
+z \stackrel{p} \longrightarrow x
+\]</span>
+常规方法只需要一次预测即能实现噪声到目标的映射，虽然速度快，但是效果不稳定。</p>
+<p>常规生成模型的训练过程（以VAE为例） <span class="math display">\[
+x \stackrel{q} \longrightarrow z \stackrel{p} \longrightarrow
+\widehat{x}
+\]</span> <strong>对于diffusion model</strong></p>
+<p>它将噪声到目标的过程进行了多步拆解。不妨假设一共有<span class="math inline">\(T+1\)</span>个时间步，第<span class="math inline">\(T\)</span>个时间步 <span class="math inline">\(x_T\)</span>是噪声数据，第0个时间步的输出是目标图片<span class="math inline">\(x_0\)</span>。其过程可以表述为： <span class="math display">\[
+z = x_T \stackrel{p} \longrightarrow x_{T-1} \stackrel{p}
+\longrightarrow \cdots \stackrel{p} \longrightarrow  x_{1} \stackrel{p}
+\longrightarrow x_0
+\]</span>
+对于DDPM它采用的是一种自回归式的重建方法，每次的输入是当前的时刻及当前时刻的噪声图片。也就是说它把噪声到目标图片的生成分成了T步，这样每一次的预测相当于是对残差的预测。优势是重建效果稳定，但速度较慢。</p>
+<p>训练整体pipeline包含两个过程</p>
+<h2 id="diffusion-pipeline">2 diffusion pipeline</h2>
+<h3 id="前置知识">2.1前置知识:</h3>
+<p>高斯分布的一些性质</p>
+<p>（1）如果<span class="math inline">\(X \sim \mathcal{N}(\mu,
+\sigma^2)\)</span>,且<span class="math inline">\(a\)</span>与<span class="math inline">\(b\)</span>是实数,那么<span class="math inline">\(aX+b \sim \mathcal{N}(a\mu+b,
+(a\sigma)^2)\)</span></p>
+<p>（2）如果$X ((x), ^2(x)) <span class="math inline">\(,\)</span>Y
+((y), ^2(y))<span class="math inline">\(,且\)</span>X,Y$是统计独立的正态随机变量,则它们的和也满足高斯分布(高斯分布可加性).
+<span class="math display">\[
+X+Y \sim \mathcal{N}(\mu(x)+\mu{(y), \sigma^2(x) + \sigma^2(y)}) \\
+X-Y \sim \mathcal{N}(\mu(x)-\mu{(y), \sigma^2(x) + \sigma^2(y)})
+\]</span> 均值为<span class="math inline">\(\mu\)</span>方差为<span class="math inline">\(\sigma\)</span>的高斯分布的概率密度函数为 <span class="math display">\[
+\begin{eqnarray}
+f(x) &amp;=&amp; \frac{1}{\sqrt{2\pi} \sigma } \exp \left ({- \frac{(x -
+\mu)^2}{2\sigma^2} } \right) \nonumber \\
+&amp;=&amp; \frac{1}{\sqrt{2\pi} \sigma } \exp \left[ -\frac{1}{2}
+\left( \frac{1}{\sigma^2}x^2 - \frac{2\mu}{\sigma^2}x +
+\frac{\mu^2}{\sigma^2}  \right )  \right]
+\end{eqnarray}
+\]</span></p>
+<h3 id="加噪过程">2.2 加噪过程</h3>
+<p>1 前向过程：将图片数据映射为噪声</p>
+<p>每一个时刻都要添加高斯噪声，后一个时刻都是由前一个时刻加噪声得到。（其实每一个时刻加的噪声就是训练所用的标签）。即
+<span class="math display">\[
+x_0 \stackrel{q} \longrightarrow x_1 \stackrel{q} \longrightarrow x_{2}
+\stackrel{q} \longrightarrow \cdots \stackrel{q}
+\longrightarrow  x_{T-1} \stackrel{q} \longrightarrow x_T=z
+\]</span> 下面我们详细来看</p>
+<p>记<span class="math inline">\(\beta_t = 1 - \alpha_t\)</span>，<span class="math inline">\(\beta_t\)</span>随t的增加而增大(论文中<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>时从0.0001 -&gt; 0.02)
+(这是因为一开始加一点噪声就很明显,后面需要增大噪声的量才明显).DDPM将加噪声过程建模为(这个是定义式,当然也可以定义成别的!)
+<span class="math display">\[
+\begin{eqnarray}
+x_t &amp;=&amp; \sqrt{\alpha_t}x_{t-1} + \sqrt{(1 - \alpha_t)}z_t
+\nonumber \\
+&amp;=&amp;  \sqrt{\alpha_t}x_{t-1} + \sqrt{\beta_t}z_t
+\end{eqnarray}
+\]</span> <span class="math inline">\(x_t\)</span>为在<span class="math inline">\(t\)</span>时刻的图片，当<span class="math inline">\(t=0\)</span>时为原图；<span class="math inline">\(z_t\)</span>为在<span class="math inline">\(t\)</span>时刻所加的噪声，服从标准正态分布<span class="math inline">\(z_t \sim \mathcal{N}(0, \textbf{I})\)</span>;<span class="math inline">\(\alpha_t\)</span>是常数,是自己定义的变量;根据高斯分布的定义,<span class="math inline">\(x_t\)</span>的分布<span class="math inline">\(q(x_t|x_{t-1})=\mathcal{N}(x_t;
+\sqrt{\alpha_t}x_{t-1}, (1 - \alpha_t) \textbf{I})\)</span>随着<span class="math inline">\(T\)</span>增大,<span class="math inline">\(x_t\)</span>越来越接近纯高斯分布.</p>
+<p>同理: <span class="math display">\[
+x_{t-1} = \sqrt{\alpha_{t-1} }x_{t-2} + \sqrt{1 - \alpha_{t-1} }z_{t-1}
+\]</span> 将式(9)代入式(8)可得: <span class="math display">\[
+\begin{eqnarray}
+x_t &amp;=&amp; \sqrt{\alpha_t} (\sqrt{\alpha_{t-1} }x_{t-2} + \sqrt{1 -
+\alpha_{t-1} }z_{t-1}) + \sqrt{1 - \alpha_t}z_t  \nonumber\\
+    &amp;=&amp; \sqrt{\alpha_t \alpha_{t-1} }x_{t-2} + (\sqrt{\alpha_t
+(1 - \alpha_{t-1})} z_{t-1}  + \sqrt{1 - \alpha_t}z_t)
+\end{eqnarray}
+\]</span> 由于<span class="math inline">\(z_{t-1}\)</span>服从均值为0,方差为1的高斯分布(即标准正态分布),根据定义<span class="math inline">\(\sqrt{\alpha_t (1 - \alpha_{t-1})}
+z_{t-1}\)</span>服从的是均值为0,方差为<span class="math inline">\(\alpha_t (1 -
+\alpha_{t-1})\)</span>的高斯分布.即<span class="math inline">\(\sqrt{\alpha_t (1 - \alpha_{t-1})} z_{t-1} \sim
+\mathcal{N}(0, \alpha_t (1 -
+\alpha_{t-1})\textbf{I})\)</span>.同理可得<span class="math inline">\(\sqrt{1 - \alpha_t}z_t \sim \mathcal{N}(0, (1 -
+\alpha_t)\textbf{I})\)</span>.则<strong>(高斯分布可加性,可以通过定义推得,不赘述)</strong>
+<span class="math display">\[
+\begin{eqnarray}
+(\sqrt{\alpha_t (1 - \alpha_{t-1})} , z_{t-1}  + \sqrt{1 - \alpha_t}z_t)
+\sim \mathcal{N}(0, \alpha_t (1 - \alpha_{t-1}) + 1 - \alpha_t)
+&amp;=&amp;  \mathcal{N}(0, 1 - \alpha_t \alpha_{t-1})
+\end{eqnarray}
+\]</span> 我们不妨记<span class="math inline">\(\overline{z}_{t-2} \sim
+\mathcal{N}(0, \textbf{I})\)</span>,则<span class="math inline">\(\sqrt{1 - \alpha_t \alpha_{t-1} }
+\overline{z}_{t-2} \sim \mathcal{N}(0, (1 - \alpha_t
+\alpha_{t-1})\textbf{I})\)</span>则式(10)最终可改写为 <span class="math display">\[
+x_t = \sqrt{\alpha_t \alpha_{t-1} } x_{t-2} +  \sqrt{1 - \alpha_t
+\alpha_{t-1} } \overline{z}_{t-2}
+\]</span> 通过递推,容易得到 $$ <span class="math display">\[\begin{eqnarray}
+x_t &amp;=&amp; \sqrt{\alpha_t \alpha_{t-1} \cdots \alpha_1} x_0
++  \sqrt{1 - \alpha_t \alpha_{t-1} \dots \alpha_1} \overline{z}_0
+\nonumber\\
+&amp;=&amp; \sqrt{\prod_{i=1}^{t} {\alpha_i} }x_0 + \sqrt{1 -
+\prod_{i=1}^{t} {\alpha_i} } \overline {z}_0 \nonumber \\
+
+&amp;\stackrel{\mathrm{令} \overline{\alpha}_{t}  \prod_{i=1}^{t}
+{\alpha_i} } = &amp; \sqrt{\overline{\alpha}_{t} }x_0+\sqrt{1 -
+\overline{\alpha}_{t} }\overline{z}_{0}
+\end{eqnarray}\]</span> <span class="math display">\[
+其中$\overline{z}_{0} \sim \mathcal{N}(0,
+\mathrm{I})$,$x_0$为原图.从式(13)可见,**我们可以从$x_0$得到任意时刻的$x_t$的分布(14),**而无需按照时间顺序递推!这极大提升了计算效率.
+\]</span> <span class="math display">\[\begin{eqnarray}
+q(x_t|x_0) &amp;=&amp;  \mathcal{N}(x_t; \mu{(x_t, t)},\sigma^2{(x_t,
+t)}{}\textbf{I})
+\nonumber\\
+&amp;=&amp; \mathcal{N}(x_t; \sqrt{\overline{\alpha}_{t} }x_0,(1 -
+\overline{\alpha}_{t})\textbf{I})
+\end{eqnarray}\]</span> $$
+⚠️<strong><font color="#DC143C">加噪过程是确定的,没有模型的介入</font>.</strong>
+其目的是制作训练时标签</p>
+<h3 id="去噪过程">2.3 去噪过程</h3>
+<p>给定<span class="math inline">\(x_T\)</span>如何求出<span class="math inline">\(x_0\)</span>呢?直接求解是很难的,作者给出的方案是:我们可以一步一步求解.即学习一个解码函数<span class="math inline">\(p\)</span>,这个<span class="math inline">\(p\)</span>能够知道<span class="math inline">\(x_{t}\)</span>到<span class="math inline">\(x_{t-1}\)</span>的映射规则.如何定义这个<span class="math inline">\(p\)</span>是问题的关键.有了<span class="math inline">\(p\)</span>,只需从<span class="math inline">\(x_{t}\)</span>到<span class="math inline">\(x_{t-1}\)</span>逐步迭代,即可得出<span class="math inline">\(x_0\)</span>. <span class="math display">\[
+z = x_T \stackrel{p} \longrightarrow x_{T-1} \stackrel{p}
+\longrightarrow \cdots \stackrel{p} \longrightarrow  x_{1} \stackrel{p}
+\longrightarrow x_0
+\]</span> 去噪过程是加噪过程的逆向.如果说加噪过程是求给定初始分布<span class="math inline">\(x_0\)</span>求任意时刻的分布<span class="math inline">\(x_t\)</span>,即<span class="math inline">\(q(x_t|x_0)\)</span>那么去噪过程所求的分布就是给定任意时刻的分布<span class="math inline">\(x_t\)</span>求其初始时刻的分布<span class="math inline">\(x_0\)</span>,即<span class="math inline">\(p(x_0|x_t)\)</span>
+,通过马尔可夫假设,可以对上述问题进行化简 <span class="math display">\[
+\begin{eqnarray}
+p(x_0|x_t) &amp;=&amp; p(x_0|x1)p(x1|x2)\cdots p(x_{t-1}| x_t)
+\nonumber \\
+&amp;=&amp; \prod_{i=0}^{t-1}{p(x_i|x_{i+1})}
+\end{eqnarray}
+\]</span> 如何求<span class="math inline">\({p(x_{t-1}|x_{t})}\)</span>呢?前面的加噪过程我们大力气推到出了<span class="math inline">\({q(x_{t}|x_{t-1})}\)</span>,我们可以通过贝叶斯公式把它利用起来
+<span class="math display">\[
+p(x_{t-1}|x_t) = \frac{p(x_{t}|x_{t-1})p(x_{t-1})}{p(x_t)}
+\]</span> ⚠️<font color="#DC143C"><strong>这里的(去噪)<span class="math inline">\(p\)</span>和上面的(加噪)<span class="math inline">\(q\)</span>只是对分布的一种符号记法,它们是等价的.</strong></font></p>
+<p>有了式(17)还是一头雾水,<span class="math inline">\(p(x_t)\)</span>和<span class="math inline">\(p(x_{t-1})\)</span>都不知道啊!该怎么办呢?这就要借助模型的威力了.下面来看如何构建我们的模型.</p>
+<p>延续加噪过程的推导<span class="math inline">\(p(x_t|x_0)\)</span>和<span class="math inline">\(p(x_{t-1}|x_0)\)</span>我们是可以知道的.因此若我们知道初始分布<span class="math inline">\(x_0\)</span>,则 $$ <span class="math display">\[\begin{eqnarray}
+
+p(x_{t-1}|x_t,x_0) &amp;=&amp; \frac{p(x_{t}|x_{t-1},
+x_0)p(x_{t-1}|x_0)}{p(x_t|x_0)}
+\\
+&amp;=&amp; \frac{\mathcal{N}(x_t; \sqrt{\alpha_t}x_{t-1}, (1 -
+\alpha_t) \textbf{I} )
+\mathcal{N}(x_{t-1}; \sqrt{\overline{\alpha}_{t-1} }x_0,(1 -
+\overline{\alpha}_{t-1}) \textbf{I})}
+
+{ \mathcal{N}(x_t; \sqrt{\overline{\alpha}_{t} }x_0,(1 -
+\overline{\alpha}_{t}) \textbf{I} )} \\
+&amp;\stackrel{将式(6)代入} \propto &amp;  
+
+\frac{
+    \exp \left ({- \frac{(x_t - \sqrt{\alpha_t}x_{t-1} )^2}{2 (1 -
+\alpha_t)} } \right)
+  \exp \left ({- \frac{(x_{t-1} - \sqrt{\overline{\alpha}_{t-1} }x_0
+)^2}{2 (1 - \overline{\alpha}_{t-1})} } \right)
+  }
+{
+  \exp \left ({- \frac{(x_{t} - \sqrt{\overline{\alpha}_{t} }x_0 )^2}{2
+(1 - \overline{\alpha}_{t})} }   \right)
+} \\
+  &amp;=&amp;
+\exp \left [-\frac{1}{2} \left (  
+\frac{(x_t - \sqrt{\alpha_t}x_{t-1} )^2}{1 - \alpha_t} +
+\frac{(x_{t-1} - \sqrt{\overline{\alpha}_{t-1} }x_0 )^2}{1 -
+\overline{\alpha}_{t-1} } -
+\frac{(x_{t} - \sqrt{\overline{\alpha}_{t} }x_0 )^2}{1 -
+\overline{\alpha}_{t} }
+\right)   \right] \\
+&amp;=&amp; \exp \left [
+-\frac{1}{2} \left(  
+\left( \frac{\alpha_t}{1-\alpha_t} + \frac{1}{1 -
+\overline{\alpha}_{t-1} } \right)x^2_{t-1} -
+\left ( \frac{2\sqrt{\overline{\alpha_{t} } } }{1 - \alpha_t}x_t +
+\frac{2 \sqrt{\overline{\alpha}_{t-1} } }  {1 - \overline{\alpha}_{t-1}
+}x_0  \right)x_{t-1} + C(x_t, x_0)
+\right)
+\right]
+
+
+\end{eqnarray}\]</span> $$</p>
+<p>结合高斯分布的定义(6)来看式(22),不难发现<span class="math inline">\(p(x_{t-1}|x_t,x_0)\)</span>也是服从高斯分布的.并且结合式(6)我们可以求出其方差和均值
+<span class="math display">\[
+\begin{eqnarray}
+\frac{1}{\sigma_2} &amp;=&amp;  \frac{\alpha_t}{1-\alpha_t} + \frac{1}{1
+- \overline{\alpha}_{t-1} } \\
+\frac{2\mu}{\sigma^2} &amp;=&amp; \frac{2\sqrt{\overline{\alpha_{t} } }
+}{1 - \alpha_t}x_t + \frac{2 \sqrt{\overline{\alpha}_{t-1} } }  {1 -
+\overline{\alpha}_{t-1} }x_0
+\end{eqnarray}
+\]</span> 可以求得: <span class="math display">\[
+\begin{eqnarray}
+\sigma^2 &amp;=&amp; \frac{1 - \overline{\alpha}_{t-1} }{1 -
+\overline{\alpha}_{t} } (1 - \alpha_t) \nonumber \\
+\mu &amp;=&amp; \frac{\sqrt{\alpha_t} (1 - \overline{\alpha}_{t-1})}  {1
+- \overline{\alpha}_t}x_t +
+\frac{\sqrt{\overline{\alpha}_{t-1} } (1 - \alpha_t) }{1 -
+\overline{\alpha}_t}x_0
+\end{eqnarray}
+\]</span> 通过上式,我们可得 <span class="math display">\[
+p(x_{t-1}|x_t,x_0) = \mathcal{N}(x_{t-1}; \frac{\sqrt{\alpha_t} (1 -
+\overline{\alpha}_{t-1})}  {1 - \overline{\alpha}_t}x_t +
+\frac{\sqrt{\overline{\alpha}_{t-1} } (1 - \alpha_t) }{1 -
+\overline{\alpha}_t}x_0 ,
+(\frac{1 - \overline{\alpha}_{t-1} }{1 - \overline{\alpha}_{t} } (1 -
+\alpha_t)) \textbf{I})
+\]</span> 该式是真实的条件分布.我们目标是让模型学到的条件分布<span class="math inline">\(p_\theta(x_{t-1}|x_t)\)</span>尽可能的接近真实的条件分布<span class="math inline">\(p(x_{t-1}|x_t,
+x_0)\)</span>.从上式可以看到方差是个固定量,那么我们要做的就是让<span class="math inline">\(p(x_{t-1}|x_t, x_0)\)</span>与<span class="math inline">\(p_\theta(x_{t-1}|x_t)\)</span>的均值尽可能的对齐,即</p>
+<p>(这个结论也可以通过最小化上述两个分布的KL散度推得) <span class="math display">\[
+\mathrm{arg} \mathop{min}_\theta \parallel u(x_0, x_t), u_\theta(x_t, t)
+\parallel
+\]</span> 下面的问题变为:<strong><font color="#DC143C ">如何构造<span class="math inline">\(u_\theta(x_t,
+t)\)</span>来使我们的优化尽可能的简单 </font></strong></p>
+<p>我们注意到<span class="math inline">\(\mu(x_0, x_t)\)</span>与<span class="math inline">\(\mu_\theta(x_t, t)\)</span>都是关于<span class="math inline">\(x_t\)</span>的函数,不妨让他们的<span class="math inline">\(x_t\)</span>保持一致,则可将<span class="math inline">\(\mu_\theta(x_t, t)\)</span>写成 <span class="math display">\[
+\mu_\theta(x_t, t) = \frac{\sqrt{\alpha_t} (1 -
+\overline{\alpha}_{t-1})}  {1 - \overline{\alpha}_t}x_t +
+\frac{\sqrt{\overline{\alpha}_{t-1} } (1 - \alpha_t) }{1 -
+\overline{\alpha}_t} f_\theta(x_t, t)
+\]</span> <span class="math inline">\(f_\theta(x_t,
+t)\)</span>是我们需要训练的模型.这样对齐均值的问题就转化成了:
+<strong>给定<span class="math inline">\(x_t,
+t\)</span>来预测原始图片输入<span class="math inline">\(x_0\)</span>.</strong>根据上文的加噪过程,我们可以很容易制造训练所需的数据对!
+(Dalle2的训练采用的是这个方式,可能这就是大力出奇迹吧).事情到这里就结束了吗?</p>
+<p>DDPM作者表示直接从<span class="math inline">\(x_t\)</span>到<span class="math inline">\(x_0\)</span>的预测数据跨度太大了,且效果一般.我们可以将式(12)做一下变形
+<span class="math display">\[
+\begin{eqnarray}
+x_t &amp;=&amp;  \sqrt{\overline{\alpha}_{t} }x_0+\sqrt{1 -
+\overline{\alpha}_{t} }\overline{z}_{0} \nonumber \\
+x_0 &amp;=&amp; \frac{1}{\sqrt{\overline{\alpha}_{t} } }(x_t - \sqrt{1 -
+\overline{\alpha}_{t} }\overline{z}_{0})
+\end{eqnarray}
+\]</span> 代入到式(24)中 $$ <span class="math display">\[\begin{eqnarray}
+\mu &amp;=&amp; \frac{\sqrt{\alpha_t} (1 - \overline{\alpha}_{t-1})}  {1
+- \overline{\alpha}_t}x_t +
+\frac{\sqrt{\overline{\alpha}_{t-1} } (1 - \alpha_t) }{1 -
+\overline{\alpha}_t} \frac{1}{\sqrt{\overline{a}_{t} } }(x_t - \sqrt{1 -
+\overline{a}_{t} }\overline{z}_{0}) \nonumber \\
+
+&amp;=&amp; \frac{\sqrt{\alpha_t} (1 - \overline{\alpha}_{t-1})}  {1 -
+\overline{\alpha}_t}x_t +
+\frac{(1 - \alpha_t) }{1 - \overline{\alpha}_t}
+\frac{1}{\sqrt{\alpha}_{t} }(x_t - \sqrt{1 - \overline{\alpha}_{t}
+}\overline{z}_{0}) \nonumber \\
+
+&amp;\stackrel{合并x_t} =&amp; \frac{\alpha_t(1 -
+\overline{\alpha}_{t-1}) + (1 - \alpha_t)  }{\sqrt{\alpha}_t (1 -
+\overline{\alpha}_t)}x_t - \frac{\sqrt{1 - \overline{\alpha}_t}(1 -
+\alpha_t) }{\sqrt{\alpha_t}(1 - \overline{\alpha}_t)}\overline{z}_0
+\nonumber \\
+&amp;=&amp; \frac{1 - \overline{\alpha}_t}{\sqrt{\alpha}_t (1 -
+\overline{\alpha}_t)}x_t -
+\frac{1 - \alpha_t }{\sqrt{\alpha_t}\sqrt{1 - \overline{\alpha}_t}
+}\overline{z}_0 \nonumber \\
+&amp;=&amp; \frac{1}{\sqrt{\alpha}_t}x_t -
+\frac{1 - \alpha_t }{\sqrt{\alpha_t}\sqrt{1 - \overline{\alpha}_t}
+}\overline{z}_0
+
+\end {eqnarray}\]</span> <span class="math display">\[
+经过这次化简,我们将$\mu{(x_0, x_t)} \Rightarrow \mu{(x_t,
+\overline{z}_0)}$,其中$\overline{z}_0 \sim \mathcal{N}(0,
+\textbf{I})$,可以将式(29)转变为
+\]</span> <em>(x_t, t) = x_t - f</em>(x_t, t) $$
+<font color="#DC143C"><strong>此时对齐均值的问题就转化成:给定<span class="math inline">\(x_t, t\)</span>预测<span class="math inline">\(x_t\)</span>加入的噪声<span class="math inline">\(\overline{z}_0\)</span>,</strong>
+</font>也就是说我们的模型预测的是噪声<span class="math inline">\(f_\theta{(x_t, t)} \simeq
+\overline{z}_0\)</span></p>
+<h4 id="训练与采样过程">2.3.1 训练与采样过程</h4>
+<p>训练的目标就是这两个噪声的尽可能的相近(用MSE或L1-loss). <span class="math display">\[
+L = \mathrm{arg} \mathop{min}_\theta \parallel \epsilon -
+\epsilon_{\theta}(x_t, t)\parallel ^2
+\]</span> 下图为论文提供的训练和采样过程</p>
+<!-- ![](/images/DDPM/algorithm.png) -->
+<!-- ![](/images/DDPM/algorithm.png) -->
+<p><img data-src="./images/DDPM/algorithm.png"> <img src="/images/DDPM/algorithm.png">
+<!-- ![](source/images/DDPM/algorithm.png) -->
+<!-- ![](/source/images/DDPM/algorithm.png)
+![](./source/images/DDPM/algorithm.png)
+<img data-src="/images/DDPM技术小结 (denoising diffusion probabilistic)/DDPM_algorithm.png"  height = "500" alt="图片名称"/>
+<img data-src="./images/DDPM/DDPM_algorithm.png"  height = "500" alt="图片名称"/> --></p>
+<h4 id="采样过程">2.3.2 采样过程</h4>
+<p>通过以上讨论,我们推导出<span class="math inline">\(p_\theta(x_{t-1}|x_t)\)</span>高斯分布的均值和方差.<span class="math inline">\(p_\theta(x_{t-1}|x_t)=\mathcal{N}(x_{t-1};
+\mu_{\theta}(x_t, t), \sigma^2(t) \textbf{I})\)</span>,根据文献<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>从一个高斯分布中采样一个随机变量可用一个重参数化技巧进行近似
+$$ <span class="math display">\[\begin{eqnarray}
+x_{t-1} &amp;=&amp; \mu_{\theta}(x_t, t) + \sigma(t) \epsilon,其中
+\epsilon \in \mathcal{N}(\epsilon; 0, \textbf{I}) \\
+&amp; = &amp; \frac{1}{\sqrt{\alpha_t} } (x_t -
+\frac{1 - \alpha_t }{\sqrt{1 - \overline{\alpha}_t} }f_\theta(x_t, t)) +
+\sigma(t) \epsilon
+
+\end{eqnarray}\]</span> $$ 式(39)和论文给出的采样递推公式一致.</p>
+<p>至此,已完成DDPM整体的pipeline.</p>
+<p>还没想明白的点,为什么不能根据(7)的变形来进行采样计算呢? <span class="math display">\[
+x_{t-1} = \frac{1}{\sqrt{\alpha_t} }x_t - \sqrt{\frac{1 -
+\alpha_t}{\alpha_t} } f_\theta(x_t, t)
+\]</span></p>
+<h2 id="从代码理解训练预测过程">3 从代码理解训练&amp;预测过程</h2>
+<h3 id="训练过程">3.1 训练过程</h3>
+<p>参考代码仓库:
+https://github.com/lucidrains/denoising-diffusion-pytorch/tree/main/denoising_diffusion_pytorch</p>
+<p>已知项: 我们假定有一批<span class="math inline">\(N\)</span>张图片<span class="math inline">\(\{x_i
+|i=1, 2, \cdots, N\}\)</span></p>
+<p><strong>第一步</strong>: 随机采样<span class="math inline">\(K\)</span>组成batch,如<span class="math inline">\(\mathrm{x\_start}= \{ x_k|k=1,2, \cdots, K
+\}\)</span>, <span class="math inline">\(\mathrm{Shape}(\mathrm{x\_start}) = (K, C, H,
+W)\)</span></p>
+<p><strong>第二步</strong>: 随机采样一些时间步</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t = torch.randint(<span class="number">0</span>, self.num_timesteps, (b,), device=device).long()  <span class="comment"># 随机采样时间步</span></span><br></pre></td></tr></table></figure>
+<p>第三步: 随机采样噪声</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">noise = default(noise, <span class="keyword">lambda</span>: torch.randn_like(x_start))  <span class="comment"># 基于高斯分布采样噪声</span></span><br></pre></td></tr></table></figure>
+<p><strong>第四步</strong>: 计算<span class="math inline">\(\mathrm{x\_start}\)</span>在所采样的时间步的输出<span class="math inline">\(x_T\)</span>(即加噪声).(根据公式12)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">linear_beta_schedule</span>(<span class="params">timesteps</span>):</span><br><span class="line">    scale = <span class="number">1000</span> / timesteps</span><br><span class="line">    beta_start = scale * <span class="number">0.0001</span></span><br><span class="line">    beta_end = scale * <span class="number">0.02</span></span><br><span class="line">    <span class="keyword">return</span> torch.linspace(beta_start, beta_end, timesteps, dtype = torch.float64)</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">betas = linear_beta_schedule(timesteps)</span><br><span class="line">alphas = <span class="number">1.</span> - betas</span><br><span class="line">alphas_cumprod = torch.cumprod(alphas, dim=<span class="number">0</span>)</span><br><span class="line">sqrt_one_minus_alphas_cumprod = torch.sqrt(<span class="number">1.</span> - alphas_cumprod)</span><br><span class="line">sqrt_alphas_cumprod = torch.sqrt(alphas_cumprod)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">extract</span>(<span class="params">a, t, x_shape</span>):</span><br><span class="line">    b, *_ = t.shape</span><br><span class="line">    out = a.gather(-<span class="number">1</span>, t)</span><br><span class="line">    <span class="keyword">return</span> out.reshape(b, *((<span class="number">1</span>,) * (<span class="built_in">len</span>(x_shape) - <span class="number">1</span>)))</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">q_sample</span>(<span class="params">x_start, t, noise=<span class="literal">None</span></span>):</span><br><span class="line">  <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">  \begin&#123;eqnarray&#125;</span></span><br><span class="line"><span class="string">    x_t &amp;=&amp; \sqrt&#123;\alpha_t&#125;x_&#123;t-1&#125; + \sqrt&#123;(1 - \alpha_t)&#125;z_t \nonumber \\</span></span><br><span class="line"><span class="string">    &amp;=&amp;  \sqrt&#123;\alpha_t&#125;x_&#123;t-1&#125; + \sqrt&#123;\beta_t&#125;z_t</span></span><br><span class="line"><span class="string">  \end&#123;eqnarray&#125;</span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        extract(sqrt_alphas_cumprod, t, x_start.shape) * x_start +</span><br><span class="line">        extract(sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">x = q_sample(x_start = x_start, t = t, noise = noise)  <span class="comment"># 这就是x0在时间步T的输出</span></span><br></pre></td></tr></table></figure>
+<p><strong>第五步</strong>: 预测噪声.输入<span class="math inline">\(x_T,t\)</span>到噪声预测模型,来预测此时的噪声<span class="math inline">\(\hat{z}_t = \epsilon_\theta(x_T,
+t)\)</span>.论文用到的模型结构是Unet,与传统Unet的输入有所不同的是增加了一个时间步的输入.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model_out = self.model(x, t, x_self_cond=<span class="literal">None</span>)  <span class="comment"># 预测噪声</span></span><br></pre></td></tr></table></figure>
+<p><strong>这里面有一个需要注意的点:模型是如何对时间步进行编码并使用的</strong></p>
+<ul>
+<li>首先会对时间步进行一个编码,将其变为一个向量,以正弦编码为例</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SinusoidalPosEmb</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dim</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.dim = dim</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">      	<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">      	Args:</span></span><br><span class="line"><span class="string">      		x (Tensor), shape like (B,)</span></span><br><span class="line"><span class="string">      	&quot;&quot;&quot;</span></span><br><span class="line">        device = x.device</span><br><span class="line">        half_dim = self.dim // <span class="number">2</span></span><br><span class="line">        emb = math.log(<span class="number">10000</span>) / (half_dim - <span class="number">1</span>)</span><br><span class="line">        emb = torch.exp(torch.arange(half_dim, device=device) * -emb)</span><br><span class="line">        emb = x[:, <span class="literal">None</span>] * emb[<span class="literal">None</span>, :]</span><br><span class="line">        emb = torch.cat((emb.sin(), emb.cos()), dim=-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> emb</span><br><span class="line">      </span><br><span class="line"><span class="comment"># 时间步的编码pipeline如下,本质就是将一个常数映射为一个向量</span></span><br><span class="line">self.time_mlp = nn.Sequential(</span><br><span class="line">    SinusoidalPosEmb(dim),</span><br><span class="line">    nn.Linear(fourier_dim, time_dim),</span><br><span class="line">    nn.GELU(),</span><br><span class="line">    nn.Linear(time_dim, time_dim)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将时间步的embedding嵌入到Unet的block中,使模型能够学习到时间步的信息</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dim, dim_out, groups = <span class="number">8</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.proj = WeightStandardizedConv2d(dim, dim_out, <span class="number">3</span>, padding = <span class="number">1</span>)</span><br><span class="line">        self.norm = nn.GroupNorm(groups, dim_out)</span><br><span class="line">        self.act = nn.SiLU()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x, scale_shift = <span class="literal">None</span></span>):</span><br><span class="line">        x = self.proj(x)</span><br><span class="line">        x = self.norm(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> exists(scale_shift):</span><br><span class="line">            scale, shift = scale_shift</span><br><span class="line">            x = x * (scale + <span class="number">1</span>) + shift  <span class="comment"># 将时间向量一分为2,一份用于提升幅值,一份用于修改相位</span></span><br><span class="line"></span><br><span class="line">        x = self.act(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">      </span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ResnetBlock</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dim, dim_out, *, time_emb_dim = <span class="literal">None</span>, groups = <span class="number">8</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.mlp = nn.Sequential(</span><br><span class="line">            nn.SiLU(),</span><br><span class="line">            nn.Linear(time_emb_dim, dim_out * <span class="number">2</span>)</span><br><span class="line">        ) <span class="keyword">if</span> exists(time_emb_dim) <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        self.block1 = Block(dim, dim_out, groups = groups)</span><br><span class="line">        self.block2 = Block(dim_out, dim_out, groups = groups)</span><br><span class="line">        self.res_conv = nn.Conv2d(dim, dim_out, <span class="number">1</span>) <span class="keyword">if</span> dim != dim_out <span class="keyword">else</span> nn.Identity()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x, time_emb = <span class="literal">None</span></span>):</span><br><span class="line"></span><br><span class="line">        scale_shift = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">if</span> exists(self.mlp) <span class="keyword">and</span> exists(time_emb):</span><br><span class="line">            time_emb = self.mlp(time_emb)</span><br><span class="line">            time_emb = rearrange(time_emb, <span class="string">&#x27;b c -&gt; b c 1 1&#x27;</span>)</span><br><span class="line">            scale_shift = time_emb.chunk(<span class="number">2</span>, dim = <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        h = self.block1(x, scale_shift = scale_shift)</span><br><span class="line"></span><br><span class="line">        h = self.block2(h)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> h + self.res_conv(x)</span><br></pre></td></tr></table></figure>
+<p><strong>第六步</strong>:计算损失,反向传播.计算预测的噪声与实际的噪声的损失,损失函数可以是L1或mse</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@property</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loss_fn</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="keyword">if</span> self.loss_type == <span class="string">&#x27;l1&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> F.l1_loss</span><br><span class="line">    <span class="keyword">elif</span> self.loss_type == <span class="string">&#x27;l2&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> F.mse_loss</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">f&#x27;invalid loss type <span class="subst">&#123;self.loss_type&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>通过不断迭代上述6步即可完成模型的训练</p>
+<h3 id="采样过程-1">3.2采样过程</h3>
+<p>第一步:随机从高斯分布采样一张噪声图片,并给定采样时间步</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">img = torch.randn(shape, device=device)</span><br></pre></td></tr></table></figure>
+<p>第二步:
+根据预测的当前时间步的噪声,通过公式计算当前时间步的均值和方差</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">posterior_mean_coef1 = betas * torch.sqrt(alphas_cumprod_prev) / (<span class="number">1.</span> - alphas_cumprod) <span class="comment"># 式(24)x_0的系数</span></span><br><span class="line">posterior_mean_coef = (<span class="number">1.</span> - alphas_cumprod_prev) * torch.sqrt(alphas) / (<span class="number">1.</span> - alphas_cumprod)  <span class="comment"># 式(24) x_t的系数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">extract</span>(<span class="params">a, t, x_shape</span>):</span><br><span class="line">  b, *_ = t.shape</span><br><span class="line">  out = a.gather(-<span class="number">1</span>, t)</span><br><span class="line">  <span class="keyword">return</span> out.reshape(b, *((<span class="number">1</span>,) * (<span class="built_in">len</span>(x_shape) - <span class="number">1</span>)))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">q_posterior</span>(<span class="params">self, x_start, x_t, t</span>):</span><br><span class="line">  posterior_mean = (</span><br><span class="line">      extract(self.posterior_mean_coef1, t, x_t.shape) * x_start +</span><br><span class="line">      extract(self.posterior_mean_coef2, t, x_t.shape) * x_t</span><br><span class="line">  )  <span class="comment"># 求出此时的均值</span></span><br><span class="line">  posterior_variance = extract(self.posterior_variance, t, x_t.shape)  <span class="comment"># 求出此时的方差</span></span><br><span class="line">  posterior_log_variance_clipped = extract(self.posterior_log_variance_clipped, t, x_t.shape) <span class="comment"># 对方差取对数,可能为了数值稳定性</span></span><br><span class="line">  <span class="keyword">return</span> posterior_mean, posterior_variance, posterior_log_variance_clipped  </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p_mean_variance</span>(<span class="params">self, x, t, x_self_cond = <span class="literal">None</span>, clip_denoised = <span class="literal">True</span></span>):</span><br><span class="line">    preds = self.model_predictions(x, t, x_self_cond)  <span class="comment"># 预测噪声</span></span><br><span class="line">    x_start = preds.pred_x_start  <span class="comment"># 模型预测的是在x_t时间步噪声,x_start是根据公式(12)求</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> clip_denoised:</span><br><span class="line">        x_start.clamp_(-<span class="number">1.</span>, <span class="number">1.</span>)</span><br><span class="line"></span><br><span class="line">    model_mean, posterior_variance, posterior_log_variance = self.q_posterior(x_start = x_start, x_t = x, t = t)</span><br><span class="line">    <span class="keyword">return</span> model_mean, posterior_variance, posterior_log_variance, x_start</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第三步: 根据公式(33)计算得到前一个时刻图片<span class="math inline">\(x_{t-1}\)</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@torch.no_grad()</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p_sample</span>(<span class="params">self, x, t: <span class="built_in">int</span>, x_self_cond = <span class="literal">None</span>, clip_denoised = <span class="literal">True</span></span>):</span><br><span class="line">    b, *_, device = *x.shape, x.device</span><br><span class="line">    batched_times = torch.full((x.shape[<span class="number">0</span>],), t, device = x.device, dtype = torch.long)</span><br><span class="line">    model_mean, _, model_log_variance, x_start = self.p_mean_variance(x = x, t = batched_times, x_self_cond = x_self_cond, clip_denoised = clip_denoised)  <span class="comment"># 计算当前分布的均值和方差</span></span><br><span class="line">    noise = torch.randn_like(x) <span class="keyword">if</span> t &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0.</span> <span class="comment"># 从高斯分布采样噪声</span></span><br><span class="line">    pred_img = model_mean + (<span class="number">0.5</span> * model_log_variance).exp() * noise  <span class="comment"># 根据</span></span><br><span class="line">    <span class="keyword">return</span> pred_img, x_start</span><br></pre></td></tr></table></figure>
+<p>通过迭代以上三步,直至<span class="math inline">\(T=0\)</span>完成采样.</p>
+<h2 id="思考和讨论">思考和讨论</h2>
+<h2 id="参考文献">参考文献</h2>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2006.11239">Denoising
+Diffusion Probabilistic Models</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.11970.pdf">Understanding Diffusion
+Models: A Unified Perspective</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/myhz0606/tags/DDPM/" rel="tag"># DDPM</a>
+              <a href="/myhz0606/tags/AIGC/" rel="tag"># AIGC</a>
+              <a href="/myhz0606/tags/diffusion-model/" rel="tag"># diffusion model</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/myhz0606/2023/01/28/image_hash_exp/" rel="prev" title="Image Hash Roadmap">
+      <i class="fa fa-chevron-left"></i> Image Hash Roadmap
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ddpm%E6%8A%80%E6%9C%AF%E5%B0%8F%E7%BB%93-denoising-diffusion-probabilistic"><span class="nav-number">1.</span> <span class="nav-text">DDPM技术小结
+(denoising diffusion probabilistic)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E7%9B%B4%E8%A7%89%E4%B8%8A%E7%90%86%E8%A7%A3ddpm"><span class="nav-number">1.1.</span> <span class="nav-text">1 从直觉上理解DDPM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#diffusion-pipeline"><span class="nav-number">1.2.</span> <span class="nav-text">2 diffusion pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1前置知识:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%99%AA%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 加噪过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%BB%E5%99%AA%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 去噪过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E4%B8%8E%E9%87%87%E6%A0%B7%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">2.3.1 训练与采样过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%87%E6%A0%B7%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">2.3.2 采样过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E4%BB%A3%E7%A0%81%E7%90%86%E8%A7%A3%E8%AE%AD%E7%BB%83%E9%A2%84%E6%B5%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">3 从代码理解训练&amp;预测过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 训练过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%87%E6%A0%B7%E8%BF%87%E7%A8%8B-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2采样过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E5%92%8C%E8%AE%A8%E8%AE%BA"><span class="nav-number">1.4.</span> <span class="nav-text">思考和讨论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wwjiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/myhz0606/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/myhz0606/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/myhz0606/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wwjiang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">12k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">45 分钟</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/myhz0606/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/myhz0606/lib/velocity/velocity.min.js"></script>
+  <script src="/myhz0606/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/myhz0606/js/utils.js"></script>
+
+<script src="/myhz0606/js/motion.js"></script>
+
+
+<script src="/myhz0606/js/schemes/pisces.js"></script>
+
+
+<script src="/myhz0606/js/next-boot.js"></script>
+
+<script src="/myhz0606/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/myhz0606/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
