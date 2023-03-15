@@ -80,124 +80,6 @@ will be called for each record to provide a value for the field. <img src="http:
       </tags>
   </entry>
   <entry>
-    <title>Notes On Creating A Hexo Theme</title>
-    <url>/myhz0606.github.io/2016/01/02/2016-01-02-Notes-On-Creating-A-Hexo-Theme/</url>
-    <content><![CDATA[<div class="image-strip">
-<img src="https://s3.amazonaws.com/ptsteadman-images/hexo.png" class>
-</div>
-<h2 id="setup">Setup</h2>
-<p>To Update NPM: <code>npm install npm@latest -g</code>.</p>
-<p>In 2015 it makes sense to use NVM. <a href="http://linoxide.com/ubuntu-how-to/install-node-js-ubuntu">NVM
-Installation Instructions</a>.</p>
-<p>Update NPM: <code>npm install npm@latest -g</code></p>
-<p>Hexo: why can't you use helper functions in source code? This should
-be in docs.</p>
-<h2 id="creating-a-custom-index-file-in-hexo">Creating a Custom Index
-File in Hexo</h2>
-<p>Trying to generate a custom index file in source, hexo would ignore
-<code>source/index.md</code> no matter what I did. What I had to do was
-uninstall <code>hexo-generator-index</code>. <a href="https://github.com/hexojs/hexo/issues/1077">See here</a>. Then it
-works. So, that will be part of the setup for my theme. But, it's worth
-it in order to properly seperate the theme from the content, I think.
-Having everyone edit the theme index.ejs template is no good.</p>
-<h2 id="hexo-rendering-raw-ejs-file-problem-i-encountered">Hexo
-Rendering Raw EJS File Problem I Encountered</h2>
-<p>Sometimes the server would keep rendering an old version of my code,
-but as text. So I'd see stuff like</p>
-<pre><code>&lt;% if (site.tags.length)&#123; %&gt;</code></pre>
-<p>The raw ejs, essentially. Restarting the server or running
-<code>hexo clean</code> didn't do anything.</p>
-<p>After some time, I realized it was due to the gedit swap files being
-read by hexo as the actual layout files: for example,
-<code>tag.ejs~</code>. My <code>partial</code> helpers looked like:
-<code>&lt;%- partial('_partials/tag') %&gt;</code>, and apparently hexo
-was reading in <code>tag.ejs~</code> instead of <code>tag.ejs</code>.
-And therefore, the ejs wasn't rendering.</p>
-<p>To fix this, I simply changed my partial helper to
-<code>&lt;%- partial('_partials/tag.ejs') %&gt;</code>. Problem
-solved.</p>
-<h2 id="hexo-excerpt-variable">Hexo Excerpt Variable</h2>
-<p>I was confused by the behavior of the hexo <code>excerpt</code>
-variable. If you define <code>excerpt: something</code> in the front
-matter, hexo ignores that. Instead, to get it to work, one needs to add
-a <code>&lt;!-- more --&gt;</code> comment in the source of the post.
-Or, you can install a plugin that allows you to define custom excerpt in
-the front matter.</p>
-<h2 id="scripts-directory">Scripts Directory</h2>
-<p>One of the things I really discovered too late is the "Scripts"
-directory in the theme folder. In Hexo, the various plugins drive the
-structure of the site, as opposed to the placement of different files
-and directories, as in Jekyll. The plugins programatically create folder
-structure, etc, where in Jekyll I mostly used the liquid markup to
-structure the site.</p>
-<p>The problem is, then, that the user wants to extend hexo to do some
-sort of custom thing. If one had to publish a new plugin, that'd be too
-much work. But the theme level scripts folder allows one to extend the
-base hexo functionality in 'user space' effectively.</p>
-]]></content>
-      <categories>
-        <category>Hexo</category>
-      </categories>
-      <tags>
-        <tag>documents</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>NAV Web Service Programming Resources</title>
-    <url>/myhz0606.github.io/2015/04/08/2015-04-08-NAV-Programming-Resources/</url>
-    <content><![CDATA[<p>Here are some of the resources I found helpful for learning to
-develop Dynamics NAV web service based applications.</p>
-<h4 id="cal-programming">C/AL Programming:</h4>
-<p><a href="http://www.consultec.es/DocTutoriales/Introduction_to_CAL_Programming.pdf">Introduction
-to CAL Programming</a> This provides a good overview of the basics of
-CAL programming, which can become necessary in building a web service
-applications when a custom codeunit or page extension is required.</p>
-<h4 id="setting-up-web-services">Setting up Web Services:</h4>
-<p><a href="http://vjeko.com/blog/connecting-to-nav-through-web-services-recorded-session">Vjecko
-Web Service Recorded Session</a> Vjecko.com has a lot of detailed
-articles about web service programming, but this older post has a pdf
-and recorded session that shows how to expose and connect to web
-services from a .NET application. Unfortunately, he shows how to create
-Web Service references in .NET using the now-deprecated Web Refrence
-method (from .NET 2) instead of the more current Service Reference
-method.</p>
-<p><a href="http://blogs.msdn.com/b/freddyk/archive/2010/01/20/connecting-to-nav-web-services-from-c-using-service-reference-config-file-version.aspx">Using
-Service Reference to Connect to Web Services</a> This explains how to
-use Service Reference, using code instead of XML web.config
-configuration, which I found difficult to configure. (Each time I
-updated the service reference, I would have to reconfigure the XML).</p>
-<h4 id="nav-upgrade-process">NAV Upgrade Process:</h4>
-<p><a href="http://saurav-nav.blogspot.com/2012/12/nav-2013-upgrade-part-iv-sql-migration.html">Migration
-to SQL Server from C/SIDE Database</a> In order to use web services, you
-don't need to be using the Role Tailored Client, but you must be using
-the a SQL server based NAV database. Web Services can be configured and
-exposed using the Classic Client for SQL Server Databases.</p>
-<p><a href="http://blogs.msdn.com/b/nav/archive/2012/03/05/rtc-debugging.aspx">Debugging
-Code Called by Web Services</a> C/AL code won't necessarily execute the
-same as it did in the Classic Client when called as a Web Service. C/AL
-code called as web service execute in the NAV Server tier, instead of
-the client. <a href="http://msdn.microsoft.com/en-us/library/ff477107.aspx">Certain
-functions</a> aren't available for code running in the NAV Server, and
-some design changes need to be made (for example, CONFIRM dialogue boxes
-don't make sense in the context of a web service). To debug the
-codeunits called through web services (or the Role Tailored Client), you
-will need to use Visual Studio. <a href="http://msdn.microsoft.com/en-us/library/dd338765.aspx#SU">More
-information.</a></p>
-<h4 id="deploying-a-.net-application">Deploying a .NET Application:</h4>
-<p><a href="http://www.asp.net/mvc/overview/deployment/visual-studio-web-deployment/deploying-to-iis">Deploying
-to IIS</a> After you've built a .NET application that consumes .NET web
-services, you'll have to find a way to deploy it on your servers, or
-Azure. Connection strings can be used to specify different NAV servers
-for different environments (like development, QA, and prod).</p>
-]]></content>
-      <categories>
-        <category>Hexo</category>
-      </categories>
-      <tags>
-        <tag>documents</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>How To Impress Employers at Infosessions</title>
     <url>/myhz0606.github.io/2015/05/02/2015-05-02-How-To-Impress/</url>
     <content><![CDATA[<p>Top tech talent knows that industry recruiters often bring a stack of
@@ -263,13 +145,273 @@ your MEng.</p>
       </tags>
   </entry>
   <entry>
+    <title>NAV Web Service Programming Resources</title>
+    <url>/myhz0606.github.io/2015/04/08/2015-04-08-NAV-Programming-Resources/</url>
+    <content><![CDATA[<p>Here are some of the resources I found helpful for learning to
+develop Dynamics NAV web service based applications.</p>
+<h4 id="cal-programming">C/AL Programming:</h4>
+<p><a href="http://www.consultec.es/DocTutoriales/Introduction_to_CAL_Programming.pdf">Introduction
+to CAL Programming</a> This provides a good overview of the basics of
+CAL programming, which can become necessary in building a web service
+applications when a custom codeunit or page extension is required.</p>
+<h4 id="setting-up-web-services">Setting up Web Services:</h4>
+<p><a href="http://vjeko.com/blog/connecting-to-nav-through-web-services-recorded-session">Vjecko
+Web Service Recorded Session</a> Vjecko.com has a lot of detailed
+articles about web service programming, but this older post has a pdf
+and recorded session that shows how to expose and connect to web
+services from a .NET application. Unfortunately, he shows how to create
+Web Service references in .NET using the now-deprecated Web Refrence
+method (from .NET 2) instead of the more current Service Reference
+method.</p>
+<p><a href="http://blogs.msdn.com/b/freddyk/archive/2010/01/20/connecting-to-nav-web-services-from-c-using-service-reference-config-file-version.aspx">Using
+Service Reference to Connect to Web Services</a> This explains how to
+use Service Reference, using code instead of XML web.config
+configuration, which I found difficult to configure. (Each time I
+updated the service reference, I would have to reconfigure the XML).</p>
+<h4 id="nav-upgrade-process">NAV Upgrade Process:</h4>
+<p><a href="http://saurav-nav.blogspot.com/2012/12/nav-2013-upgrade-part-iv-sql-migration.html">Migration
+to SQL Server from C/SIDE Database</a> In order to use web services, you
+don't need to be using the Role Tailored Client, but you must be using
+the a SQL server based NAV database. Web Services can be configured and
+exposed using the Classic Client for SQL Server Databases.</p>
+<p><a href="http://blogs.msdn.com/b/nav/archive/2012/03/05/rtc-debugging.aspx">Debugging
+Code Called by Web Services</a> C/AL code won't necessarily execute the
+same as it did in the Classic Client when called as a Web Service. C/AL
+code called as web service execute in the NAV Server tier, instead of
+the client. <a href="http://msdn.microsoft.com/en-us/library/ff477107.aspx">Certain
+functions</a> aren't available for code running in the NAV Server, and
+some design changes need to be made (for example, CONFIRM dialogue boxes
+don't make sense in the context of a web service). To debug the
+codeunits called through web services (or the Role Tailored Client), you
+will need to use Visual Studio. <a href="http://msdn.microsoft.com/en-us/library/dd338765.aspx#SU">More
+information.</a></p>
+<h4 id="deploying-a-.net-application">Deploying a .NET Application:</h4>
+<p><a href="http://www.asp.net/mvc/overview/deployment/visual-studio-web-deployment/deploying-to-iis">Deploying
+to IIS</a> After you've built a .NET application that consumes .NET web
+services, you'll have to find a way to deploy it on your servers, or
+Azure. Connection strings can be used to specify different NAV servers
+for different environments (like development, QA, and prod).</p>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>documents</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dalle2 技术小结</title>
+    <url>/myhz0606.github.io/2023/03/15/2023-03-15-Dalle2/</url>
+    <content><![CDATA[<h2 id="背景">背景</h2>
+<p>随着AIGC概念及diffusion
+model在视觉领域的发光发热。OpenAI结合CLIP与diffusion
+model提出了一个二阶段的文本生成图片范式Dalle2<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>，能够更精细的从语义层面控制图片的生成效果。得益于其训练范式，Dalle2的图片生成的质量不弱于GLIDE<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>,但生成器的多样性有明显提升。下面我们来看它是怎么做的吧！
+<span id="more"></span></p>
+<h2 id="dalle2的总体架构">Dalle2的总体架构</h2>
+<p>Dalle2作为一个文到图的生成模型，其输入是文本，其输出是基于该文本对应的图片即<span class="math inline">\(P(x|y)\)</span> 。Dalle2将该过程分为两个阶段</p>
+<p>其一是DiffusionPrior <span class="math inline">\(P(z_i|y)\)</span>，其作用是获得输入文本<span class="math inline">\(y\)</span>对应的CLIP图片向量<span class="math inline">\(z_i\)</span>。</p>
+<p>其二是DiffusionDecode <span class="math inline">\(P(x|z_i,y)\)</span>，作用是根据输入的文本<span class="math inline">\(y\)</span>和估计的图片向量<span class="math inline">\(z_i\)</span>生成图片<span class="math inline">\(x\)</span>。下面我们对这两个模块进行详细介绍。</p>
+<p>上述两个阶段可用公式(1)进行表述 <span class="math display">\[
+P(x|y)=P(x,z_i|y) = P(x|z_i, y)P(z_i|y)
+\]</span> <strong>可能会有读者疑问为什么<span class="math inline">\(P(x|y)=p(x,z_i|y)\)</span>。</strong>这是因为<span class="math inline">\(z_i\)</span>是<span class="math inline">\(x\)</span>的CLIP的image
+embedding，CLIP是一个确定的函数，故相等。</p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_arch.png"></p>
+<h3 id="diffusionprior模块">DiffusionPrior模块</h3>
+<p>Prior模块的作用是给定文本，生成该文本对应的CLIP模型的图片向量。（generate
+possible CLIP image embedding from a given text caption）</p>
+<p>前置知识：</p>
+<ul>
+<li><p>DIffusion model的原理，可参考博客<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。</p></li>
+<li><p>CLIP的基本原理<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。</p></li>
+</ul>
+<h4 id="训练阶段">训练阶段</h4>
+<p>训练数据： 图片文本对<span class="math inline">\(\{(x_i,y_i)|
+i=1,2,...,N\}\)</span></p>
+<p>对DuffusionPrior的训练主要包含以下几个步骤：</p>
+<p>Step1：将图片文本对输入到CLIP<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>模型中获得对应的文本向量编码（text
+embedding）文本中每个token的编码（text encoding）及图像向量编码（image
+embedding）。这里值得注意的是：<strong>CLIP的模型权重冻结，不参加训练。</strong></p>
+<p>Step2: 对image embedding（此处的image embedding就是diffusion
+model中的<span class="math inline">\(x_0\)</span>）。随机采样时间步<span class="math inline">\(t\)</span>，对<span class="math inline">\(x_0\)</span>进行加噪,得到第<span class="math inline">\(t\)</span>时刻的noise image embedding <span class="math inline">\(x_t\)</span>。</p>
+<p>Step3: 将文本向量编码、文本token编码、时间步向量、<span class="math inline">\(t\)</span>时刻的图像向量编码输入到模型中（其本质是一个decode-only
+transformer with a causal attention mask）。该模型的作用是预测分布<span class="math inline">\(p(x_{t-1}|x_t)\)</span>分布的均值。</p>
+<p>Step4: 计算预测分布与实际分布的KL散度实现训练。</p>
+<p>PS：作者训练中用了很多trick，由于本文主要关注在理解dalle2的工作原理，故未详细描述，若想深入了解可参考代码。</p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_prior_train.png"></p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_prior_detail_train.png"></p>
+<h4 id="推理阶段">推理阶段</h4>
+<p>推理阶段主要包含以下步骤：</p>
+<p>Step1：将文本内容<span class="math inline">\(y\)</span>送入到CLIP模型中得到文本向量文本向量编码（text
+embedding）文本中每个token的编码（text encoding）。</p>
+<p>Step2: 从高斯分布中随机采样一组向量作为<span class="math inline">\(T\)</span>时刻的图片向量编码。将文本向量编码、文本中每个token的编码、时间步编码、<span class="math inline">\(T\)</span>时刻的图片向量编码送入到DiffusionPriorNetwork中，预测<span class="math inline">\(T-1\)</span>时刻的图片向量编码。</p>
+<p>Step3: 不断重复步骤2，直至时间步到<span class="math inline">\(0\)</span>得到所需的image embedding。</p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_prior_sample.png"></p>
+<p><strong>可能会有读者有疑问：CLIP模型不是已经在文本特征与图片特征对齐了吗？为什么要多此一举设计DiffusionPrior模块来根据文本embedding来生成图片embedding而不是直接用文本embedding来作为图片embedding。</strong></p>
+<p>这是因为虽然CLIP在训练过程中通过对比损失使得图片特征与文本特征进行对齐，但是模态间还是有存在Gap<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>，Prior模块的很大的意义是给定文本embedding，准确预测出其对应CLIP的image
+embedding，更有益于重建的效果。如下图将CLIP的image
+embedding送入decode生成的图像（第三行）从相关性与质量上明显优于直接送入text
+embedding的效果（第二行）。</p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_prior_benefit.png"></p>
+<h3 id="diffusiondecode-模块">DiffusionDecode 模块</h3>
+<p>Decode部分也是个diffusion model。其主要作用是根据image
+embedding和文本embedding进行图像重建。这里值得强调的是，之前基于文本生成图片的任务只有文本向量作为条件（condition）。与之不同的是，Dalle2生成图片的条件有两个：其一是文本向量；其二是基于Prior模块估计的图片向量，这个操作使得它的生成效果更逼真、稳定。</p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_decode_sample.png"></p>
+<p><strong>decode模块有两个比较关键训练trick</strong></p>
+<p><strong>1. 如何实现classifier-free guidance<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></strong></p>
+<p>dalle2的实现是每次随机mask掉10%的CLIP
+embedding，并且每次随机丢弃50%的text caption。</p>
+<p><strong>2. 如何获得更高分辨率的生成图像</strong></p>
+<p>Dalle2采用了渐进式的生成方法。Dalle2训练了两个diffusion
+upsampler模型，第一个模型从<span class="math inline">\(64 \times
+64\)</span>采样到<span class="math inline">\(256 \times
+256\)</span>,第二个进一步采样到<span class="math inline">\(1024 \times
+1024\)</span>。为了提升upsamper的稳健性，第一个上采样阶段用了高斯模糊；第二个上采样阶段用了多种BSR
+degradation操作<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a></p>
+<p>最后来看一下Dalle2的pipeline</p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_pipe.png"></p>
+<h2 id="dalle2的生成质量和目前的局限性">Dalle2的生成质量和目前的局限性</h2>
+<h3 id="dalle2的生成效果">Dalle2的生成效果</h3>
+<h4 id="基于ms-coco-caption生成效果">基于MS-COCO caption生成效果</h4>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_gen_contrastive.png"></p>
+<h4 id="other">Other</h4>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_gen_contrastive2.png"></p>
+<h3 id="dalle2的局限性">Dalle2的局限性</h3>
+<p><strong>1.
+CLIP的embedding没有将属性精确的绑定到对象，导致进行解码重建时会混淆属性和对象。</strong></p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_limit_1.png"></p>
+<p><strong>2.
+CLIP的embedding可能没有精确编码渲染文本的拼写信息，导致连续文本的生成会出现问题。</strong></p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_limit_2.png"></p>
+<p><strong>3. 由于解码器是在<span class="math inline">\(64 \times
+64\)</span>分辨率生成图像，虽有进行上采样，这可能导致难以在复杂场景生成细节。</strong></p>
+<p><img src="http://myhz0606blog.oss-cn-beijing.aliyuncs.com/Dalle2/Dalle2_limit_3.png"></p>
+<h2 id="参考文献">参考文献</h2>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><a href="https://arxiv.org/abs/2204.06125">Dalle2论文：Hierarchical
+Text-Conditional Image Generation with CLIP Latents</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://arxiv.org/abs/2112.10741">GLIDE:
+Towards Photorealistic Image Generation and Editing with Text-Guided
+Diffusion Models.</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><a href="http://myhz0606.com/2023/02/20/DDPM/">DDPM
+(denoising diffusion probabilistic) 技术小结</a><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p><a href="Learning%20Transferable%20Visual%20Models%20From%20Natural%20Language%20Supervision">Learning
+Transferable Visual Models From Natural Language Supervision</a><a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p><a href="Learning%20Transferable%20Visual%20Models%20From%20Natural%20Language%20Supervision">Learning
+Transferable Visual Models From Natural Language Supervision</a><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://arxiv.org/abs/2203.02053">Mind the Gap:
+Understanding the Modality Gap in Multi-modal Contrastive Representation
+Learning</a><a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p><a href="https://arxiv.org/abs/2207.12598">Classifier-Free Diffusion
+Guidance</a><a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>[High-Resolution Image Synthesis with Latent Diffusion
+Models<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+]]></content>
+      <categories>
+        <category>diffusion model</category>
+      </categories>
+      <tags>
+        <tag>DDPM</tag>
+        <tag>AIGC</tag>
+        <tag>diffusion model</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Notes On Creating A Hexo Theme</title>
+    <url>/myhz0606.github.io/2016/01/02/2016-01-02-Notes-On-Creating-A-Hexo-Theme/</url>
+    <content><![CDATA[<div class="image-strip">
+<img src="https://s3.amazonaws.com/ptsteadman-images/hexo.png" class>
+</div>
+<h2 id="setup">Setup</h2>
+<p>To Update NPM: <code>npm install npm@latest -g</code>.</p>
+<p>In 2015 it makes sense to use NVM. <a href="http://linoxide.com/ubuntu-how-to/install-node-js-ubuntu">NVM
+Installation Instructions</a>.</p>
+<p>Update NPM: <code>npm install npm@latest -g</code></p>
+<p>Hexo: why can't you use helper functions in source code? This should
+be in docs.</p>
+<h2 id="creating-a-custom-index-file-in-hexo">Creating a Custom Index
+File in Hexo</h2>
+<p>Trying to generate a custom index file in source, hexo would ignore
+<code>source/index.md</code> no matter what I did. What I had to do was
+uninstall <code>hexo-generator-index</code>. <a href="https://github.com/hexojs/hexo/issues/1077">See here</a>. Then it
+works. So, that will be part of the setup for my theme. But, it's worth
+it in order to properly seperate the theme from the content, I think.
+Having everyone edit the theme index.ejs template is no good.</p>
+<h2 id="hexo-rendering-raw-ejs-file-problem-i-encountered">Hexo
+Rendering Raw EJS File Problem I Encountered</h2>
+<p>Sometimes the server would keep rendering an old version of my code,
+but as text. So I'd see stuff like</p>
+<pre><code>&lt;% if (site.tags.length)&#123; %&gt;</code></pre>
+<p>The raw ejs, essentially. Restarting the server or running
+<code>hexo clean</code> didn't do anything.</p>
+<p>After some time, I realized it was due to the gedit swap files being
+read by hexo as the actual layout files: for example,
+<code>tag.ejs~</code>. My <code>partial</code> helpers looked like:
+<code>&lt;%- partial('_partials/tag') %&gt;</code>, and apparently hexo
+was reading in <code>tag.ejs~</code> instead of <code>tag.ejs</code>.
+And therefore, the ejs wasn't rendering.</p>
+<p>To fix this, I simply changed my partial helper to
+<code>&lt;%- partial('_partials/tag.ejs') %&gt;</code>. Problem
+solved.</p>
+<h2 id="hexo-excerpt-variable">Hexo Excerpt Variable</h2>
+<p>I was confused by the behavior of the hexo <code>excerpt</code>
+variable. If you define <code>excerpt: something</code> in the front
+matter, hexo ignores that. Instead, to get it to work, one needs to add
+a <code>&lt;!-- more --&gt;</code> comment in the source of the post.
+Or, you can install a plugin that allows you to define custom excerpt in
+the front matter.</p>
+<h2 id="scripts-directory">Scripts Directory</h2>
+<p>One of the things I really discovered too late is the "Scripts"
+directory in the theme folder. In Hexo, the various plugins drive the
+structure of the site, as opposed to the placement of different files
+and directories, as in Jekyll. The plugins programatically create folder
+structure, etc, where in Jekyll I mostly used the liquid markup to
+structure the site.</p>
+<p>The problem is, then, that the user wants to extend hexo to do some
+sort of custom thing. If one had to publish a new plugin, that'd be too
+much work. But the theme level scripts folder allows one to extend the
+base hexo functionality in 'user space' effectively.</p>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>documents</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/myhz0606.github.io/2023/01/28/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very
+first post. Check <a href="https://hexo.io/docs/">documentation</a> for
+more info. If you get any problems when using Hexo, you can find the
+answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
+you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>DDPM(denoising diffusion probabilistic)技术小结</title>
     <url>/myhz0606.github.io/2023/02/20/DDPM/</url>
-    <content><![CDATA[<h1 id="ddpm技术小结-denoising-diffusion-probabilistic">DDPM技术小结
-(denoising diffusion probabilistic)</h1>
-<h2 id="从直觉上理解ddpm">1 从直觉上理解DDPM</h2>
+    <content><![CDATA[<h2 id="从直觉上理解ddpm">1 从直觉上理解DDPM</h2>
 <p>在详细推到公式之前，我们先从直觉上理解一下什么是扩散</p>
 <p>对于常规的生成模型，如GAN，VAE，它直接从噪声数据生成图像，我们不妨记噪声数据为<span class="math inline">\(z\)</span>,其生成的图片为<span class="math inline">\(x\)</span></p>
+<span id="more"></span>
 <p><strong>对于常规的生成模型</strong>：</p>
 <p>学习一个解码函数(即我们需要学习的模型)<span class="math inline">\(p\)</span>，实现 $p(z)=x $ <span class="math display">\[
 z \stackrel{p} \longrightarrow x
@@ -607,7 +749,8 @@ Models: A Unified Perspective</a><a href="#fnref2" class="footnote-back" role="d
     <content><![CDATA[<h2 id="问题引出">1 问题引出</h2>
 <h3 id="从最近邻搜索谈起nearest-neighbor-search-nn">1.1
 从最近邻搜索谈起(nearest neighbor search, NN)</h3>
-<p>最近邻检索：给定一张查询图片q(即query)（或文本），从数据库<span class="math inline">\(\mathcal{X}\)</span>中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。</p>
+<p>最近邻检索：给定一张查询图片q(即query)（或文本），从数据库<span class="math inline">\(\mathcal{X}\)</span>中找到与之最相近的N张图片（或文本）。在实际的检索场景中，我们会用一条向量来作为图片(或文本)的表征。
+<span id="more"></span></p>
 <p>用公式表达最近邻检索： <span class="math display">\[
 \mathrm{NN}(q)=\mathrm{arg}\mathop{min}\limits_{x\in \mathcal{X} } \
 \mathrm{dist}(q, x)
@@ -1068,7 +1211,7 @@ m_{i,2},...,m_{i,256}]\)</span>。将所有样本第一维的特征汇聚一起�
 </tr>
 </tbody>
 </table>
-<p><img src="https://myhz0606blog.oss-cn-beijing.aliyuncs.com/image_hash_exp/GrayTestsetSearchResult-4894374.png" height="500" alt="graytest"></p>
+<p><img src="https://myhz0606blog.oss-cn-beijing.aliyuncs.com/image_hash_exp/GrayTestsetSearchResult-4894374.png"></p>
 <p>从实验结果看，采用OT方法进行哈希量化能达到最优的效果。并且该方法实现简单，能够复用已刷的向量。</p>
 <h5 id="向量存储评估">3.3.3.2 向量存储评估</h5>
 <p>以目前256维向量为例。线上采用SQ8量化相较float32存储占用少4倍。哈希量化存储量化在SQ8基础上还能少8倍。</p>
@@ -1689,28 +1832,5 @@ Unsupervised Deep Hashing for Cross-Modal Video-Text Retrieval</a><a href="#fnre
         <tag>哈希检索</tag>
         <tag>图像哈希</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/myhz0606.github.io/2023/01/28/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very
-first post. Check <a href="https://hexo.io/docs/">documentation</a> for
-more info. If you get any problems when using Hexo, you can find the
-answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
-you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
 </search>
